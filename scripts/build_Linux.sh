@@ -14,6 +14,7 @@ fi
 
 # Install system dependencies
 yum install -y \
+    python3 \
     fontconfig-devel \
     mesa-libGL-devel \
     xorg-x11-server-Xvfb \
@@ -41,8 +42,7 @@ git clone https://gn.googlesource.com/gn && \
 
 # Build skia
 cd skia && \
-    patch -p1 < ../patch/git-sync-deps.patch && \
-    python tools/git-sync-deps && \
+    python3 tools/git-sync-deps && \
     patch -p1 < ../patch/make_data_assembly.patch && \
     patch -p1 < ../patch/libjpeg-arm.patch && \
     cp -f ../gn/out/gn bin/gn && \
