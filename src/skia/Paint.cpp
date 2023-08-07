@@ -454,8 +454,9 @@ paint
         )docstring",
         py::arg("join"))
     .def("getFillPath",
-        py::overload_cast<const SkPath&, const SkPaint&, SkPath*, const SkRect*, SkScalar>(
-            &skpathutils::FillPathWithPaint),
+        [] (const SkPaint& paint, const SkPath &src, SkPath *dst, const SkRect *cullRect, SkScalar resScale) {
+            return skpathutils::FillPathWithPaint(src, paint, dst, cullRect, resScale);
+        }),
         R"docstring(
         Returns the filled equivalent of the stroked path.
 
@@ -468,7 +469,7 @@ paint
         :return: true if the path represents style fill, or false if it
             represents hairline
         )docstring",
-        py::arg("src"), py::arg("paint"), py::arg("dst"), py::arg("cullRect") = nullptr,
+        py::arg("src"), py::arg("dst"), py::arg("cullRect") = nullptr,
         py::arg("resScale") = 1)
     // .def("getFillPath",
     //     py::overload_cast<const SkPath&, SkPath*>(
