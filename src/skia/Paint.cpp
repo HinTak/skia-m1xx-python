@@ -456,7 +456,7 @@ paint
     .def("getFillPath",
         [] (const SkPaint& paint, const SkPath &src, SkPath *dst, const SkRect *cullRect, SkScalar resScale) {
             return skpathutils::FillPathWithPaint(src, paint, dst, cullRect, resScale);
-        }),
+        },
         R"docstring(
         Returns the filled equivalent of the stroked path.
 
