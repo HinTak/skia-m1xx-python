@@ -15,6 +15,15 @@ if [[ -f "skia/out/Release/libskia.a" ]] ; then
     exit 0
 fi
 
+if [[ $(uname -m) == "aarch64" ]]; then
+    # Install ninja for aarch64
+    yum -y install epel-release && \
+        yum repolist && \
+        yum install -y ninja-build && \
+        ln -s ninja-build /usr/bin/ninja &&
+        mv depot_tools/ninja depot_tools/ninja.bak
+fi
+
 # libicu.a is the largest 3rd-party; if it already exists, we run ninja
 # a 2nd time and exit.
 # Running ninja a 2nd-time is safe - it is no-ops if skia is already built too.
@@ -25,15 +34,6 @@ if [[ -f "skia/out/Release/libicu.a" ]] ; then
         ninja -C out/Release && \
         cd ..
     exit 0
-fi
-
-if [[ $(uname -m) == "aarch64" ]]; then
-    # Install ninja for aarch64
-    yum -y install epel-release && \
-        yum repolist && \
-        yum install -y ninja-build && \
-        ln -s ninja-build /usr/bin/ninja &&
-        mv depot_tools/ninja depot_tools/ninja.bak
 fi
 
 # Install system dependencies
