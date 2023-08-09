@@ -10,10 +10,15 @@ export AR=ar
 export CFLAGS="-Wno-deprecated-copy"
 export LDFLAGS="-lrt"
 
-# libicu.a is the largest 3rd-party; if it already exists, we simply run ninja
+# Simply quit, if it looks like a previous run was successful:
+if [[ -f "skia/out/Release/libskia.a" ]] ; then
+    exit 0
+fi
+
+# libicu.a is the largest 3rd-party; if it already exists, we run ninja
 # a 2nd time and exit.
 # Running ninja a 2nd-time is safe - it is no-ops if skia is already built too.
-# The 3rd-party below are built in size-order; we built libicu last to signal
+# The 3rd-party libraries below are built in size-order; we built libicu last to signal
 # having built most of them.
 if [[ -f "skia/out/Release/libicu.a" ]] ; then
     cd skia && \
