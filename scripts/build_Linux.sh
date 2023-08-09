@@ -20,7 +20,7 @@ if [[ -f "skia/out/Release/libicu.a" ]] ; then
         ninja -C out/Release && \
         cd ..
     exit 0
-if
+fi
 
 if [[ $(uname -m) == "aarch64" ]]; then
     # Install ninja for aarch64
