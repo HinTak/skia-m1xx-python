@@ -37,7 +37,9 @@ jobs:
                          chmod a+rwx -R skia"
       - name: Build Skia Proper
         uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-03-05-271004f
-        run: bash scripts/build_Linux.sh
+        with:
+          args: bash -c "git config --global --add safe.directory '*' &&
+                         bash scripts/build_Linux.sh
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }}) for ${{ matrix.cp }}
