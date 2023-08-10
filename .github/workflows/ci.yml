@@ -36,6 +36,7 @@ jobs:
                          bash scripts/build_Linux.sh &&
                          chmod a+rwx -R skia"
       - name: Build Skia Proper
+        uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-03-05-271004f
         run: bash scripts/build_Linux.sh
 
   build_wheels:
