@@ -10,6 +10,19 @@ export AR=ar
 export CFLAGS="-Wno-deprecated-copy"
 export LDFLAGS="-lrt"
 
+# Install system dependencies
+if [[ $EUID -eq 0 ]]; then
+    yum install -y \
+        python3 \
+        fontconfig-devel \
+        mesa-libGL-devel \
+        xorg-x11-server-Xvfb \
+        mesa-dri-drivers && \
+        yum clean all && \
+        rm -rf /var/cache/yum
+fi
+
+# Wheel-building needs fontconfig-devel from above.
 # Simply quit, if it looks like a previous run was successful:
 if [[ -f "skia/out/Release/libskia.a" ]] ; then
     exit 0
@@ -22,18 +35,6 @@ if [[ $(uname -m) == "aarch64" ]]; then
         yum install -y ninja-build && \
         ln -s ninja-build /usr/bin/ninja &&
         mv depot_tools/ninja depot_tools/ninja.bak
-fi
-
-# Install system dependencies
-if [[ $EUID -eq 0 ]]; then
-    yum install -y \
-        python3 \
-        fontconfig-devel \
-        mesa-libGL-devel \
-        xorg-x11-server-Xvfb \
-        mesa-dri-drivers && \
-        yum clean all && \
-        rm -rf /var/cache/yum
 fi
 
 # libicu.a is the largest 3rd-party; if it already exists, we run ninja
