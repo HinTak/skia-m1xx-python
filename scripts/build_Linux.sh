@@ -33,7 +33,7 @@ if [[ -f "skia/out/Release/libicu.a" ]] ; then
     cd skia && \
         ninja -C out/Release && \
         cd ..
-    exit 0
+    exit $?
 fi
 
 # Install system dependencies
