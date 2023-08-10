@@ -24,18 +24,6 @@ if [[ $(uname -m) == "aarch64" ]]; then
         mv depot_tools/ninja depot_tools/ninja.bak
 fi
 
-# libicu.a is the largest 3rd-party; if it already exists, we run ninja
-# a 2nd time and exit.
-# Running ninja a 2nd-time is safe - it is no-ops if skia is already built too.
-# The 3rd-party libraries below are built in size-order; we built libicu last to signal
-# having built most of them.
-if [[ -f "skia/out/Release/libicu.a" ]] ; then
-    cd skia && \
-        ninja -C out/Release && \
-        cd ..
-    exit $?
-fi
-
 # Install system dependencies
 if [[ $EUID -eq 0 ]]; then
     yum install -y \
@@ -47,6 +35,19 @@ if [[ $EUID -eq 0 ]]; then
         yum clean all && \
         rm -rf /var/cache/yum
 fi
+
+# libicu.a is the largest 3rd-party; if it already exists, we run ninja
+# a 2nd time and exit.
+# Running ninja a 2nd-time is safe - it is no-ops if skia is already built too.
+# The 3rd-party libraries below are built in size-order; we built libicu last to signal
+# having built most of them.
+if [[ -f "skia/out/Release/libicu.a" ]] ; then
+    cd skia && \
+        ninja -C out/Release && \
+        cd ..
+    exit $?
+fi
+### 2nd round<->1st round ###
 
 # Build gn
 git clone https://gn.googlesource.com/gn && \
