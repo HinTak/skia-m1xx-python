@@ -9,8 +9,8 @@ on:
     types: [published]
 
 jobs:
-  prebuild_linux_aarch64_3rd_party:
-    name: Build skia bundled 3rd-party on linux/aarch64
+  prebuild_linux_aarch64:
+    name: Build skia on linux/aarch64
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
@@ -35,26 +35,7 @@ jobs:
           args: bash -c "git config --global --add safe.directory '*' &&
                          bash scripts/build_Linux.sh &&
                          chmod a+rwx -R skia"
-
-  prebuild_linux_aarch64:
-    name: Build skia on linux/aarch64
-    needs: prebuild_linux_aarch64_3rd_party
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-      - uses: actions/cache@v3
-        id: cache-skia
-        with:
-          path: |
-            gn
-            skia
-          key: linux-aarch64-skia-${{ github.sha }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
       - name: Build Skia Proper
-        uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-03-05-271004f
         run: bash scripts/build_Linux.sh
 
   build_wheels:
