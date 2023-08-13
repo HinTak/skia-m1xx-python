@@ -3,6 +3,7 @@
 #include <include/gpu/ganesh/gl/GrGLBackendSurface.h>
 #include <include/private/chromium/GrSurfaceCharacterization.h>
 #include <include/gpu/GpuTypes.h>
+#include <include/gpu/GrTypes.h>
 #include <include/gpu/ganesh/SkSurfaceGanesh.h>
 #include <include/gpu/GrBackendSurfaceMutableState.h>
 #include <pybind11/operators.h>
@@ -718,9 +719,14 @@ surface
             fonts
         )docstring")
 /* m117: Remove legacy SkImage and SkSurface methods */
-/*
     .def("flushAndSubmit",
-        py::overload_cast<bool>(&SkSurface::flushAndSubmit),
+        [] (SkSurface& surface, bool syncCpu) {
+            surface.flush(BackendSurfaceAccess::kNoAccess, GrFlushInfo());
+            auto direct = GrAsDirectContext(surface.recordingContext());
+            if (direct) {
+                direct->submit(syncCpu);
+            }
+        },
         R"docstring(
         Call to ensure all reads/writes of the surface have been issued to the
         underlying 3D API.
@@ -736,6 +742,13 @@ surface
         )docstring",
         py::arg("syncCpu") = false)
     .def("flush",
+        [] (SkSurface& surface, BackendSurfaceAccess access, const GrFlushInfo& info) {
+            auto dContext = GrAsDirectContext(surface.recordingContext());
+            if (!dContext) {
+                return GrSemaphoresSubmitted::kNo;
+            }
+            return dContext->flush(&surface, access, info);
+        },
         py::overload_cast<SkSurfaces::BackendSurfaceAccess, const GrFlushInfo&>(
             &SkSurface::flush),
         R"docstring(
@@ -797,9 +810,14 @@ surface
         )docstring",
         py::arg("access"), py::arg("info"))
     .def("flush",
-        py::overload_cast<
-            const GrFlushInfo&, const skgpu::MutableTextureState*>(
-            &SkSurface::flush),
+        [] (SkSurface& surface, const GrFlushInfo& info,
+            const skgpu::MutableTextureState* newState) {
+            auto dContext = GrAsDirectContext(surface.recordingContext());
+            if (!dContext) {
+                return GrSemaphoresSubmitted::kNo;
+            }
+            return dContext->flush(&this, info, newState);
+        },
         R"docstring(
         Issues pending :py:class:`Surface` commands to the GPU-backed API
         objects and resolves any :py:class:`Surface` MSAA.
@@ -852,7 +870,6 @@ surface
         :param newState: optional state change request after flush
         )docstring",
         py::arg("info"), py::arg("newState") = nullptr)
-*/
     .def("characterize", &SkSurface::characterize,
         R"docstring(
         Initializes :py:class:`SurfaceCharacterization` that can be used to
