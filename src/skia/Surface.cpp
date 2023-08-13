@@ -721,9 +721,9 @@ surface
 /* m117: Remove legacy SkImage and SkSurface methods */
     .def("flushAndSubmit",
         [] (SkSurface& surface, bool syncCpu) {
-            surface.flush(BackendSurfaceAccess::kNoAccess, GrFlushInfo());
             auto direct = GrAsDirectContext(surface.recordingContext());
             if (direct) {
+                direct->flush(&surface, BackendSurfaceAccess::kNoAccess, GrFlushInfo());
                 direct->submit(syncCpu);
             }
         },
