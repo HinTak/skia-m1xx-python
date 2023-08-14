@@ -723,7 +723,7 @@ surface
         [] (SkSurface& surface, bool syncCpu) {
             auto direct = GrAsDirectContext(surface.recordingContext());
             if (direct) {
-                direct->flush(&surface, SkSurface::BackendSurfaceAccess::kNoAccess, GrFlushInfo());
+                direct->flush(&surface, SkSurfaces::BackendSurfaceAccess::kNoAccess, GrFlushInfo());
                 direct->submit(syncCpu);
             }
         },
