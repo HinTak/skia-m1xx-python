@@ -723,7 +723,7 @@ surface
         [] (SkSurface& surface, bool syncCpu) {
             auto direct = GrAsDirectContext(surface.recordingContext());
             if (direct) {
-                direct->flush(&surface, BackendSurfaceAccess::kNoAccess, GrFlushInfo());
+                direct->flush(&surface, SkSurface::BackendSurfaceAccess::kNoAccess, GrFlushInfo());
                 direct->submit(syncCpu);
             }
         },
@@ -742,15 +742,13 @@ surface
         )docstring",
         py::arg("syncCpu") = false)
     .def("flush",
-        [] (SkSurface& surface, BackendSurfaceAccess access, const GrFlushInfo& info) {
+        [] (SkSurface& surface, SkSurfaces::BackendSurfaceAccess access, const GrFlushInfo& info) {
             auto dContext = GrAsDirectContext(surface.recordingContext());
             if (!dContext) {
                 return GrSemaphoresSubmitted::kNo;
             }
             return dContext->flush(&surface, access, info);
         },
-        py::overload_cast<SkSurfaces::BackendSurfaceAccess, const GrFlushInfo&>(
-            &SkSurface::flush),
         R"docstring(
         Issues pending :py:class:`Surface` commands to the GPU-backed API
         objects and resolves any :py:class:`Surface` MSAA. A call to
@@ -816,7 +814,7 @@ surface
             if (!dContext) {
                 return GrSemaphoresSubmitted::kNo;
             }
-            return dContext->flush(&this, info, newState);
+            return dContext->flush(&surface, info, newState);
         },
         R"docstring(
         Issues pending :py:class:`Surface` commands to the GPU-backed API
@@ -1012,7 +1010,7 @@ surface
         [] (GrRecordingContext* context, const GrBackendTexture& backendTexture,
             GrSurfaceOrigin origin, int sampleCnt, SkColorType colorType,
             sk_sp<SkColorSpace> colorSpace,
-            const SkSurfaceProps* surfaceProps, RenderTargetReleaseProc releaseProc, ReleaseContext releaseContext) {
+            const SkSurfaceProps* surfaceProps, SkSurfaces::RenderTargetReleaseProc releaseProc, SkSurfaces::ReleaseContext releaseContext) {
             return SkSurfaces::WrapBackendTexture(
                 context, backendTexture, origin, sampleCnt, colorType,
                 colorSpace, surfaceProps, releaseProc, releaseContext);
@@ -1057,7 +1055,7 @@ surface
         [] (GrRecordingContext* context, const GrBackendRenderTarget& target,
             GrSurfaceOrigin origin, SkColorType colorType,
             sk_sp<SkColorSpace> colorSpace,
-            const SkSurfaceProps* surfaceProps, RenderTargetReleaseProc releaseProc, ReleaseContext releaseContext) {
+            const SkSurfaceProps* surfaceProps, SkSurfaces::RenderTargetReleaseProc releaseProc, SkSurfaces::ReleaseContext releaseContext) {
             return SkSurfaces::WrapBackendRenderTarget(
                 context, target, origin, colorType, colorSpace, surfaceProps, releaseProc, releaseContext);
         },
