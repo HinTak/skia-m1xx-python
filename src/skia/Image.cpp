@@ -1264,9 +1264,10 @@ image
         :return: true if :py:class:`Image` can be drawn
         )docstring",
         py::arg("context") = nullptr)
-/*
     .def("flush",
-        py::overload_cast<GrDirectContext*, const GrFlushInfo&>(&SkImage::flush),
+        [] (sk_sp<const SkImage> image, sk_sp<GrDirectContext> context, const GrFlushInfo& info) {
+            return context->flush(image, info);
+        },
         R"docstring(
         Flushes any pending uses of texture-backed images in the GPU backend. If
         the image is not texture-backed (including promise texture images) or if
@@ -1284,16 +1285,26 @@ image
         )docstring"
         )
     .def("flush",
-        py::overload_cast<GrDirectContext*>(&SkImage::flush),
+        [] (sk_sp<const SkImage> image, sk_sp<GrDirectContext> context) {
+            return context->flush(image);
+        },
         py::arg("context").none(false))
-    .def("flushAndSubmit", &SkImage::flushAndSubmit,
+    .def("flushAndSubmit",
+        [] (sk_sp<const SkImage> image, sk_sp<GrDirectContext> context) {
+            return context->flushAndSubmit(image);
+        },
         R"docstring(
         Version of :py:meth:`flush` that uses a default GrFlushInfo.
 
         Also submits the flushed work to the GPU.
         )docstring",
         py::arg("context").none(false))
-    .def("getBackendTexture", &SkImage::getBackendTexture,
+    .def("getBackendTexture",
+        [] (const SkImage* img,
+            bool flushPendingGrContextIO,
+            GrSurfaceOrigin* origin) {
+            return SkImages::GetBackendTextureFromImage(img, nullptr, flushPendingGrContextIO, origin);
+        },
         R"docstring(
         Retrieves the back-end texture. If :py:class:`Image` has no back-end
         texture, an invalid object is returned. Call
@@ -1308,7 +1319,6 @@ image
         :return: back-end API texture handle; invalid on failure
         )docstring",
         py::arg("flushPendingGrContextIO"), py::arg("origin") = nullptr)
-*/
     .def("readPixels", &ImageReadPixels,
         R"docstring(
         Copies a :py:class:`Rect` of pixels from :py:class:`Image` to dst. Copy
@@ -1602,8 +1612,13 @@ image
         Returns an image with the same "base" pixels as the this image, but with
         mipmap levels automatically generated and attached.
         )docstring")
-/*
-    .def("makeTextureImage", &SkImage::makeTextureImage,
+    .def("makeTextureImage",
+        [] (const SkImage* img,
+            GrDirectContext* ctx,
+            skgpu::Mipmapped m,
+            skgpu::Budgeted b) {
+            return SkImages::TextureFromImage(ctx, img, m, b);
+        },
         R"docstring(
         Returns :py:class:`Image` backed by GPU texture associated with context.
 
@@ -1631,8 +1646,7 @@ image
         :return: created :py:class:`Image`, or nullptr
         )docstring",
         py::arg("context").none(false), py::arg("mipMapped") = GrMipmapped::kNo,
-        py::arg("budgeted") = SkBudgeted::kYes)
-*/
+        py::arg("budgeted") = skgpu::Budgeted::kYes)
     .def("makeNonTextureImage", &SkImage::makeNonTextureImage,
         R"docstring(
         Returns raster image or lazy image.
@@ -1705,11 +1719,10 @@ image
         py::arg("context"), py::arg("filter"), py::arg("subset"),
         py::arg("clipBounds"), py::arg("outSubset").none(false),
         py::arg("offset").none(false))
-/*
     .def_static("MakeBackendTextureFromImage",
         [] (GrDirectContext* context, sk_sp<SkImage>& image,
             GrBackendTexture* backendTexture) {
-            return SkImages::GetBackendTextureFromImage(
+            return SkImages::MakeBackendTextureFromImage(
                 context, image, backendTexture, nullptr);
         },
         R"docstring(
@@ -1734,7 +1747,6 @@ image
         :return: true if back-end texture was created
         )docstring",
         py::arg("context"), py::arg("image"), py::arg("backendTexture"))
-*/
     .def("asLegacyBitmap", &SkImage::asLegacyBitmap,
         R"docstring(
         Deprecated.
