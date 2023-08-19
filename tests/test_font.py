@@ -656,3 +656,19 @@ def test_FontMetrics_hasStrikeoutThickness(fontmetrics):
 def test_FontMetrics_hasStrikeoutPosition(fontmetrics):
     position = 0.
     assert isinstance(fontmetrics.hasStrikeoutPosition(position), bool)
+
+
+def test_ttc0():
+    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 0), skia.Typeface)
+
+
+def test_ttc1():
+    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 1), skia.Typeface)
+
+
+def test_ttc2():
+    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 2), skia.Typeface)
+
+
+def test_ttc3():
+    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 3), skia.Typeface)
