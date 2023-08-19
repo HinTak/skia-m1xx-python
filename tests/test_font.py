@@ -1,3 +1,4 @@
+import os
 import skia
 import pytest
 
@@ -568,3 +569,26 @@ def test_FontMetrics_hasStrikeoutThickness(fontmetrics):
 def test_FontMetrics_hasStrikeoutPosition(fontmetrics):
     position = 0.
     assert isinstance(fontmetrics.hasStrikeoutPosition(position), bool)
+
+
+def test_ttc0():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
+
+
+@pytest.mark.skip(reason='Fails on mac os x, #138')
+def test_ttc1():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
+
+
+@pytest.mark.skip(reason='Fails on mac os x, #138')
+def test_ttc2():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
+
+
+@pytest.mark.skip(reason='Fails on mac os x, #138')
+def test_ttc3():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
