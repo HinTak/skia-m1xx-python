@@ -1,3 +1,4 @@
+import os
 import skia
 import pytest
 
@@ -568,16 +569,20 @@ def test_FontMetrics_hasStrikeoutPosition(fontmetrics):
 
 
 def test_ttc0():
-    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 0), skia.Typeface)
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
 
 
 def test_ttc1():
-    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 1), skia.Typeface)
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
 
 
 def test_ttc2():
-    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 2), skia.Typeface)
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
 
 
 def test_ttc3():
-    assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 3), skia.Typeface)
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
