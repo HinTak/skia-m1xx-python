@@ -3,7 +3,7 @@ Since m117:
 * Remove GrBackendSurfaceMutableState
 * Remove bridge code for legacy GL GrBackendSurface code
   * GrBackendFormat::MakeGL, GrBackendFormat::asGLFormat,
-    GrBackendTexture::getGLTextureInfo, 
+    GrBackendTexture::getGLTextureInfo,
     GrBackendTexture::glTextureParametersModified,
     GrBackendRenderTarget::getGLFramebufferInfo,
     now emulated
