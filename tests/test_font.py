@@ -672,3 +672,22 @@ def test_ttc2():
 
 def test_ttc3():
     assert isinstance(skia.Typeface.MakeFromFile("MutatorSans.ttc", 3), skia.Typeface)
+
+@pytest.fixture
+def color_emoji_run():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
+    text = "✌✌🏻"
+    font = skia.Font(typeface,109)
+    blob = skia.TextBlob.MakeFromShapedText(text, font)
+    run = [x for x in blob]
+    return run[0]
+
+def test_emoji_count(color_emoji_run):
+    assert (color_emoji_run.fGlyphCount == 2)
+
+def test_emoji_glyph1(color_emoji_run):
+    assert (color_emoji_run.fGlyphIndices[0] == 148)
+
+def test_emoji_glyph2(color_emoji_run):
+    assert (color_emoji_run.fGlyphIndices[1] == 1512)
