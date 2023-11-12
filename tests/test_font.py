@@ -603,6 +603,8 @@ def color_emoji_run():
     typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
     #assert (typeface.getFamilyName() == "Noto Color Emoji") # if we assert here we lose all the tests
     text = "✌✌🏻"
+    if (typeface == None): # Mac
+        typeface = skia.Typeface("Apple Color Emoji")
     font = skia.Font(typeface,109)
     blob = skia.TextBlob.MakeFromShapedText(text, font)
     run = [x for x in blob]
