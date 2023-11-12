@@ -571,6 +571,10 @@ def test_FontMetrics_hasStrikeoutPosition(fontmetrics):
     assert isinstance(fontmetrics.hasStrikeoutPosition(position), bool)
 
 
+def test_ttcname():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert (skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0).getFamilyName() == "MutatorMathTest")
+
 def test_ttc0():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
