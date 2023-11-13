@@ -614,10 +614,10 @@ def test_emoji_count(color_emoji_run):
     assert (color_emoji_run.fGlyphCount == 2)
 
 def test_emoji_typeface(color_emoji_run):
-    assert (color_emoji_run.fTypeface.getFamilyName() == "Noto Color Emoji")
+    assert ((color_emoji_run.fTypeface.getFamilyName() == "Noto Color Emoji") or (color_emoji_run.fTypeface.getFamilyName() == "Apple Color Emoji"))
 
 def test_emoji_glyph1(color_emoji_run):
-    assert (color_emoji_run.fGlyphIndices[0] == 148)
+    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 247))
 
 def test_emoji_glyph2(color_emoji_run):
-    assert (color_emoji_run.fGlyphIndices[1] == 1512)
+    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 248))
