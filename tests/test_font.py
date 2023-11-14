@@ -622,7 +622,7 @@ def test_emoji_typeface(color_emoji_run):
             or (color_emoji_run.fTypeface.getFamilyName() == "Segoe UI Emoji"))
 
 def test_emoji_glyph1(color_emoji_run):
-    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 247) or (color_emoji_run.fGlyphIndices[0] == 1367))
+    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 247) or (color_emoji_run.fGlyphIndices[0] == 6054))
 
 def test_emoji_glyph2(color_emoji_run):
-    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 248) or (color_emoji_run.fGlyphIndices[1] == 1371))
+    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 248) or (color_emoji_run.fGlyphIndices[1] == 6057))
