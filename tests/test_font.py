@@ -631,21 +631,27 @@ def test_ttc0():
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
 
 
-@pytest.mark.skip(reason='Fails on mac os x, #138')
 def test_ttc1():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
 
 
-@pytest.mark.skip(reason='Fails on mac os x, #138')
 def test_ttc2():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
 
 
-@pytest.mark.skip(reason='Fails on mac os x, #138')
 def test_ttc3():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
 
 
