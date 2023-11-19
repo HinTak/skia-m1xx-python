@@ -227,6 +227,32 @@ def test_Typeface_MakeDeserialize(typeface):
 
 
 @pytest.fixture
+def svgface(svgfont_path):
+    return skia.Typeface.MakeFromFile(svgfont_path)
+
+
+def test_svgface_typeface(svgface):
+    assert (svgface.getFamilyName() == "SampleSVG")
+
+
+@pytest.fixture
+def svg_blob(svgface):
+    text = "abcdefgh"
+    font = skia.Font(svgface,109)
+    blob = skia.TextBlob.MakeFromShapedText(text, font)
+    return blob
+
+
+def test_svg_blob_bounds(svg_blob):
+    bounds = svg_blob.bounds()
+    import math
+    assert (math.isclose(bounds.fLeft,   10,      abs_tol=0.0001) and
+            math.isclose(bounds.fTop,    15.2852, abs_tol=0.0001) and
+            math.isclose(bounds.fRight,  334,     abs_tol=0.0001) and
+            math.isclose(bounds.fBottom, 87.2852, abs_tol=0.0001))
+
+
+@pytest.fixture
 def fontstyleset(fontmgr):
     return fontmgr.createStyleSet(0)
 
