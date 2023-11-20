@@ -62,7 +62,7 @@ elif sys.platform == 'darwin':
         'dl',
     ]
     EXTRA_OBJECTS = list(
-    ) + [os.path.join(SKIA_OUT_PATH, 'libsvg.a'), os.path.join(SKIA_OUT_PATH, 'libskresources.a'), os.path.join(SKIA_OUT_PATH, 'libskia.a'),
+    ) + [os.path.join(SKIA_OUT_PATH, 'libsvg.a'), os.path.join(SKIA_OUT_PATH, 'libskia.a'),
          os.path.join(SKIA_OUT_PATH, 'libskshaper.a'), os.path.join(SKIA_OUT_PATH, 'libskunicode.a')]
     EXTRA_COMPILE_ARGS = [
         '-std=c++17',
@@ -94,7 +94,7 @@ else:
         'expat',
     ]
     EXTRA_OBJECTS = list(
-    ) + [os.path.join(SKIA_OUT_PATH, 'libsvg.a'), os.path.join(SKIA_OUT_PATH, 'libskia.a'),
+    ) + [os.path.join(SKIA_OUT_PATH, 'libsvg.a'), os.path.join(SKIA_OUT_PATH, 'libskresources.a'), os.path.join(SKIA_OUT_PATH, 'libskia.a'),
          os.path.join(SKIA_OUT_PATH, 'libskshaper.a'), os.path.join(SKIA_OUT_PATH, 'libskunicode.a')]
     EXTRA_COMPILE_ARGS = [
         '-std=c++17',
