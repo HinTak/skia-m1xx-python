@@ -635,6 +635,28 @@ def test_ttc3():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
 
+
+def test_fontmgr_custom_ttcname():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert (skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0).getFamilyName() == "MutatorMathTest")
+
+def test_fontmgr_custom_ttc0():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
+
+def test_fontmgr_custom_ttc1():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
+
+def test_fontmgr_custom_ttc2():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
+
+def test_fontmgr_custom_ttc3():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
+
+
 @pytest.fixture
 def color_emoji_run():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
