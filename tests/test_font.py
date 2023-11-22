@@ -264,6 +264,19 @@ def test_svg_blob_bounds(svg_blob):
             math.isclose(bounds.fBottom, 87.2852, abs_tol=0.5))
 
 
+def test_fontmgr_custom_svg_blob_bounds(svgfont_path):
+    svgface = skia.FontMgr.New_Custom_Empty().makeFromFile(svgfont_path)
+    text = "abcdefgh"
+    font = skia.Font(svgface,109)
+    svg_blob = skia.TextBlob.MakeFromShapedText(text, font)
+    bounds = svg_blob.bounds()
+    import math
+    assert (math.isclose(bounds.fLeft,   10,      abs_tol=0.5) and
+            math.isclose(bounds.fTop,    15.2852, abs_tol=0.5) and
+            math.isclose(bounds.fRight,  334,     abs_tol=0.5) and
+            math.isclose(bounds.fBottom, 87.2852, abs_tol=0.5))
+
+
 @pytest.fixture
 def fontstyleset(fontmgr):
     return fontmgr.createStyleSet(0)
