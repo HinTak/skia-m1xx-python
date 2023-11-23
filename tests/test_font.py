@@ -705,3 +705,37 @@ def test_emoji_glyph2(color_emoji_run):
     if sys.platform.startswith("win"):
         pytest.skip("Known to fail on winows")
     assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 248) or (color_emoji_run.fGlyphIndices[1] == 1571))
+
+
+# These differs in not needing to use Apple Color Emoji.
+@pytest.fixture
+def fontmgr_custom_color_emoji_run():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
+    text = "✌✌🏻"
+    import sys
+    if sys.platform.startswith("win"):
+        typeface = skia.Typeface("Segoe UI Emoji")
+    font = skia.Font(typeface,109)
+    blob = skia.TextBlob.MakeFromShapedText(text, font)
+    run = [x for x in blob]
+    return run[0]
+
+def fontmgr_custom_test_emoji_count(fontmgr_custom_color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert (color_emoji_run.fGlyphCount == 2)
+
+def fontmgr_custom_test_emoji_typeface(fontmgr_custom_color_emoji_run):
+    assert ((color_emoji_run.fTypeface.getFamilyName() == "Noto Color Emoji")
+            or (color_emoji_run.fTypeface.getFamilyName() == "Segoe UI Emoji"))
+
+def fontmgr_custom_test_emoji_glyph1(fontmgr_custom_color_emoji_run):
+    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 1567))
+
+def fontmgr_custom_test_emoji_glyph2(fontmgr_custom_color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 1571))
