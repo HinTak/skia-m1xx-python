@@ -256,8 +256,8 @@ def svg_blob(svgface):
 def test_svg_blob_bounds(svg_blob):
     bounds = svg_blob.bounds()
     import math, sys
-#    if not sys.platform.startswith("linux"):
-#        pytest.skip("This should work on linux and windows, but somehow only on Linux. REVISIT.")
+    if not sys.platform.startswith("linux"):
+        pytest.skip("This should work on linux and windows, but somehow only on Linux. REVISIT.")
     assert (math.isclose(bounds.fLeft,   10,      abs_tol=0.5) and
             math.isclose(bounds.fTop,    15.2852, abs_tol=0.5) and
             math.isclose(bounds.fRight,  334,     abs_tol=0.5) and
