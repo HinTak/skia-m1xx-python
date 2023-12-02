@@ -1,3 +1,4 @@
+import sys
 import skia
 import pytest
 from datetime import timedelta
