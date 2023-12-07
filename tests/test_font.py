@@ -1,3 +1,4 @@
+import os
 import skia
 import pytest
 
@@ -151,7 +152,6 @@ def test_Typeface_getUnitsPerEm(typeface):
     assert isinstance(typeface.getUnitsPerEm(), int)
 
 
-@pytest.mark.skip(reason='segfault in m116; REVISIT')
 def test_Typeface_getKerningPairAdjustments(typeface):
     assert isinstance(
         typeface.getKerningPairAdjustments([0]), (list, type(None)))
@@ -619,3 +619,128 @@ def test_FontMetrics_hasStrikeoutThickness(fontmetrics):
 def test_FontMetrics_hasStrikeoutPosition(fontmetrics):
     position = 0.
     assert isinstance(fontmetrics.hasStrikeoutPosition(position), bool)
+
+
+def test_ttcname():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert (skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0).getFamilyName() == "MutatorMathTest")
+
+def test_ttc0():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
+
+
+def test_ttc1():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
+
+
+def test_ttc2():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
+
+
+def test_ttc3():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    import sys
+    if sys.platform.startswith("darwin"):
+        pytest.skip("Fails on mac os x, #138")
+    assert isinstance(skia.Typeface.MakeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
+
+
+def test_fontmgr_custom_ttcname():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert (skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0).getFamilyName() == "MutatorMathTest")
+
+def test_fontmgr_custom_ttc0():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 0), skia.Typeface)
+
+def test_fontmgr_custom_ttc1():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 1), skia.Typeface)
+
+def test_fontmgr_custom_ttc2():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 2), skia.Typeface)
+
+def test_fontmgr_custom_ttc3():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert isinstance(skia.FontMgr.New_Custom_Empty().makeFromFile(os.path.join(root_dir, "MutatorSans.ttc"), 3), skia.Typeface)
+
+
+@pytest.fixture
+def color_emoji_run():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
+    #assert (typeface.getFamilyName() == "Noto Color Emoji") # if we assert here we lose all the tests
+    text = "✌✌🏻"
+    if (typeface == None): # Mac
+        typeface = skia.Typeface("Apple Color Emoji")
+    import sys
+    if sys.platform.startswith("win"):
+        typeface = skia.Typeface("Segoe UI Emoji")
+    font = skia.Font(typeface,109)
+    blob = skia.TextBlob.MakeFromShapedText(text, font)
+    run = [x for x in blob]
+    return run[0]
+
+def test_emoji_count(color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert (color_emoji_run.fGlyphCount == 2)
+
+def test_emoji_typeface(color_emoji_run):
+    assert ((color_emoji_run.fTypeface.getFamilyName() == "Noto Color Emoji")
+            or (color_emoji_run.fTypeface.getFamilyName() == "Apple Color Emoji")
+            or (color_emoji_run.fTypeface.getFamilyName() == "Segoe UI Emoji"))
+
+def test_emoji_glyph1(color_emoji_run):
+    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 247) or (color_emoji_run.fGlyphIndices[0] == 1567))
+
+def test_emoji_glyph2(color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 248) or (color_emoji_run.fGlyphIndices[1] == 1571))
+
+
+# These differs in not needing to use Apple Color Emoji.
+@pytest.fixture
+def fontmgr_custom_color_emoji_run():
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
+    text = "✌✌🏻"
+    import sys
+    if sys.platform.startswith("win"):
+        typeface = skia.Typeface("Segoe UI Emoji")
+    font = skia.Font(typeface,109)
+    blob = skia.TextBlob.MakeFromShapedText(text, font)
+    run = [x for x in blob]
+    return run[0]
+
+def fontmgr_custom_test_emoji_count(fontmgr_custom_color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert (color_emoji_run.fGlyphCount == 2)
+
+def fontmgr_custom_test_emoji_typeface(fontmgr_custom_color_emoji_run):
+    assert ((color_emoji_run.fTypeface.getFamilyName() == "Noto Color Emoji")
+            or (color_emoji_run.fTypeface.getFamilyName() == "Segoe UI Emoji"))
+
+def fontmgr_custom_test_emoji_glyph1(fontmgr_custom_color_emoji_run):
+    assert ((color_emoji_run.fGlyphIndices[0] == 148) or (color_emoji_run.fGlyphIndices[0] == 1567))
+
+def fontmgr_custom_test_emoji_glyph2(fontmgr_custom_color_emoji_run):
+    import sys
+    if sys.platform.startswith("win"):
+        pytest.skip("Known to fail on winows")
+    assert ((color_emoji_run.fGlyphIndices[1] == 1512) or (color_emoji_run.fGlyphIndices[1] == 1571))
