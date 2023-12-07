@@ -339,6 +339,14 @@ def test_FontMgr_ref_unref(fontmgr):
 def font():
     return skia.Font(skia.Typeface('Roman'))
 
+def test_Font_default():
+    f = skia.Font()
+    assert f != None
+
+def test_Font_typeface_default():
+    f = skia.Font()
+    tf = f.getTypeface()
+    assert tf != None
 
 @pytest.mark.parametrize('args', [
     tuple(),
