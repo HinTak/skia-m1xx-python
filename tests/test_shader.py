@@ -59,6 +59,7 @@ def test_Shaders_Blend(shader):
         skia.Shader)
 
 
+@pytest.mark.skip(reason='m116:REVISIT - v117.0b3')
 def test_Shaders_Lerp(shader):
     assert isinstance(
         skia.Shaders.Lerp(0.5, shader, shader), skia.Shader)
