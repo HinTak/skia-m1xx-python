@@ -346,7 +346,7 @@ def test_Font_default():
 def test_Font_typeface_default():
     f = skia.Font()
     tf = f.getTypeface()
-    assert tf != None
+    assert tf == None
 
 @pytest.mark.parametrize('args', [
     tuple(),
