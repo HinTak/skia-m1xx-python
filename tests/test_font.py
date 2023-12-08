@@ -339,6 +339,24 @@ def test_FontMgr_ref_unref(fontmgr):
 def font():
     return skia.Font()
 
+def test_Font_default():
+    f = skia.Font()
+    assert f != None
+
+def test_Font_typeface_default():
+    f = skia.Font()
+    tf = f.getTypeface()
+    assert tf == None
+
+def test_Font_typeface_default_name():
+    font = skia.Font(None,109)
+    blob = skia.TextBlob.MakeFromText('abcd', font)
+    run = [x for x in blob]
+    if (run[0].fTypeface == None):
+        return
+    fname = run[0].fTypeface.getFamilyName()
+    assert fname == ''
+
 
 @pytest.mark.parametrize('args', [
     tuple(),
