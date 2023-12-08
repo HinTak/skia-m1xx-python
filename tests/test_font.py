@@ -352,9 +352,9 @@ def test_Font_typeface_default_name():
     font = skia.Font(None,109)
     blob = skia.TextBlob.MakeFromText('abcd', font)
     run = [x for x in blob]
-    fname = run[0].fTypeface.getFamilyName()
     if (run[0].fTypeface == None):
         return
+    fname = run[0].fTypeface.getFamilyName()
     assert fname == ''
 
 
