@@ -151,7 +151,6 @@ def test_Typeface_getUnitsPerEm(typeface):
     assert isinstance(typeface.getUnitsPerEm(), int)
 
 
-@pytest.mark.skip(reason='segfault in m116; REVISIT')
 def test_Typeface_getKerningPairAdjustments(typeface):
     assert isinstance(
         typeface.getKerningPairAdjustments([0]), (list, type(None)))
@@ -338,7 +337,25 @@ def test_FontMgr_ref_unref(fontmgr):
 
 @pytest.fixture(scope='session')
 def font():
-    return skia.Font()
+    return skia.Font(skia.Typeface('Roman'))
+
+def test_Font_default():
+    f = skia.Font()
+    assert f != None
+
+def test_Font_typeface_default():
+    f = skia.Font()
+    tf = f.getTypeface()
+    assert tf == None
+
+def test_Font_typeface_default_name():
+    font = skia.Font(None,109)
+    blob = skia.TextBlob.MakeFromText('abcd', font)
+    run = [x for x in blob]
+    if (run[0].fTypeface == None):
+        return
+    fname = run[0].fTypeface.getFamilyName()
+    assert fname == ''
 
 
 @pytest.mark.parametrize('args', [
@@ -518,12 +535,10 @@ def test_Font_getXPos(font, glyphs):
     assert isinstance(font.getXPos(glyphs), list)
 
 
-@pytest.mark.skip(reason='m116:REVISIT')
 def test_Font_getPath(font, glyphs):
     assert isinstance(font.getPath(glyphs[0]), skia.Path)
 
 
-@pytest.mark.skip(reason='m116:REVISIT')
 def test_Font_getPaths(font, glyphs):
     paths = font.getPaths(glyphs)
     assert isinstance(paths, list)
