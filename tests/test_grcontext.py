@@ -608,3 +608,57 @@ def test_GrVkImageInfo_init():
 def test_GrVkBackendContext_init():
     # No op on "darwin", passes
     assert isinstance(skia.GrVkBackendContext(), skia.GrVkBackendContext)
+
+def test_ShaderError():
+    import glfw
+    from OpenGL import GL # github CI 3.7 fails dlopen() here.
+
+    path = skia.Path()
+    path.moveTo(184, 445)
+    path.lineTo(249, 445)
+    path.quadTo(278, 445, 298, 438)
+    path.quadTo(318, 431, 331, 419)
+    path.quadTo(344, 406, 350, 390)
+    path.quadTo(356, 373, 356, 354)
+    path.quadTo(356, 331, 347, 312)
+    path.quadTo(338, 292, 320, 280) # <- comment out this line and shape will draw correctly with anti-aliasing
+    path.close()
+
+    if not glfw.init():
+        raise RuntimeError('glfw.init() failed')
+    glfw.window_hint(glfw.STENCIL_BITS, 8)
+    window = glfw.create_window(640, 480, '', None, None)
+    assert window is not None
+    glfw.make_context_current(window)
+
+    context = skia.GrDirectContext.MakeGL()
+    assert context is not None                                # assert here
+    (fb_width, fb_height) = glfw.get_framebuffer_size(window) # segfault against 3.9, 3.11
+    backend_render_target = skia.GrBackendRenderTarget(
+        fb_width,
+        fb_height,
+        0,  # sampleCnt
+        0,  # stencilBits
+        skia.GrGLFramebufferInfo(0, GL.GL_RGBA8))
+    surface = skia.Surface.MakeFromBackendRenderTarget(
+        context, backend_render_target, skia.kBottomLeft_GrSurfaceOrigin,
+        skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB())
+    assert surface is not None                                # assert here, with stderr "nullptr GL version string."
+    # cp311-macosx_x86_64/venv-test/lib/python3.11/site-packages/glfw/__init__.py:914: GLFWError: (65545) b'NSGL: Failed to find a suitable pixel format'
+    #     warnings.warn(message, GLFWError)
+
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT)
+
+    with surface as canvas:
+        canvas.drawCircle(100, 100, 40, skia.Paint(Color=skia.ColorGREEN, AntiAlias=True))
+
+        paint = skia.Paint(Color=skia.ColorBLUE)
+        paint.setStyle(skia.Paint.kStroke_Style)
+        paint.setStrokeWidth(2)
+        paint.setAntiAlias(True)
+
+        canvas.drawPath(path, paint)
+
+    surface.flushAndSubmit()
+    import glfw
+    glfw.swap_buffers(window)
