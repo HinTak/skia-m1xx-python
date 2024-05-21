@@ -18,11 +18,7 @@ jobs:
       matrix:
         os: [macos-12]
         arch: [auto64]
-        cp: ["cp3{9,10,11,12}"]
-        include:
-          - os: macos-12
-            arch: arm64
-            cp: "cp3{9,10,11,12}"
+        cp: ["cp3{11,12}"]
 
     steps:
       - uses: actions/checkout@v3
