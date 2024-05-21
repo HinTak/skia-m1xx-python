@@ -631,6 +631,8 @@ def test_ShaderError():
         context, backend_render_target, skia.kBottomLeft_GrSurfaceOrigin,
         skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB())
     assert surface is not None                                # assert here, with stderr "nullptr GL version string."
+    # cp311-macosx_x86_64/venv-test/lib/python3.11/site-packages/glfw/__init__.py:914: GLFWError: (65545) b'NSGL: Failed to find a suitable pixel format'
+    #     warnings.warn(message, GLFWError)
 
     GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
