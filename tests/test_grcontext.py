@@ -619,7 +619,7 @@ def test_ShaderError():
     glfw.make_context_current(window)
 
     context = skia.GrDirectContext.MakeGL()
-    assert context is not None
+    assert context is not None                                # assert here
     (fb_width, fb_height) = glfw.get_framebuffer_size(window) # segfault against 3.9, 3.11
     backend_render_target = skia.GrBackendRenderTarget(
         fb_width,
