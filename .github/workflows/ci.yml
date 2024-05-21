@@ -9,92 +9,15 @@ on:
     types: [published]
 
 jobs:
-  prebuild_linux_aarch64_3rd_party:
-    name: Build skia bundled 3rd-party on linux/aarch64
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/cache@v4
-        id: cache-skia
-        with:
-          path: |
-            gn
-            skia
-          key: linux-aarch64-skia-${{ github.sha }}-3rd-party
-      - name: Pre-fetch skia deps
-        run: git config --global core.compression 0 && cd skia && patch -p1 -i ../patch/skia-m126-minimize-download.patch && python tools/git-sync-deps && patch -p1 -R -i ../patch/skia-m126-minimize-download.patch
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Build skia 3rd-Party
-        # Taken from https://github.com/pypa/cibuildwheel/blob/v2.16.2/cibuildwheel/resources/pinned_docker_images.cfg
-        uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-10-03-72cdc42
-        if: ${{ steps.cache-skia.outputs.cache-hit != 'true' }}
-        with:
-          args: bash -c "git config --global --add safe.directory '*' &&
-                         bash scripts/build_Linux.sh &&
-                         chmod a+rwx -R skia"
-
-  prebuild_linux_aarch64:
-    name: Build skia on linux/aarch64
-    needs: prebuild_linux_aarch64_3rd_party
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/cache@v4
-        id: cache-skia
-        with:
-          path: |
-            gn
-            skia
-          key: linux-aarch64-skia-${{ github.sha }}
-      - uses: actions/cache/restore@v4
-        with:
-          path: |
-            gn
-            skia
-          key: linux-aarch64-skia-${{ github.sha }}-3rd-party
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Build Skia Proper
-        uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-10-03-72cdc42
-        with:
-          args: bash -c "git config --global --add safe.directory '*' &&
-                         bash scripts/build_Linux.sh
-
   build_wheels:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }}) for ${{ matrix.cp }}
-    needs: prebuild_linux_aarch64
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        os: [macos-14]
         arch: [auto64]
-        cp: ["cp3{8,9,10,11,12}"]
-        include:
-          - os: macos-12
-            arch: arm64
-            cp: "cp3{8,9,10,11,12}"
-          # aarch64 is emulated and takes longer, build one wheel per job
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp38
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp39
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp310
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp311
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp312
+        cp: ["cp3{11,12}"]
 
     steps:
       - uses: actions/checkout@v4
@@ -125,7 +48,7 @@ jobs:
           CIBW_BEFORE_ALL: bash scripts/build_${{ runner.os }}.sh
           CIBW_BEFORE_BUILD: pip install pybind11 numpy
           CIBW_TEST_REQUIRES: pytest pillow glfw
-          CIBW_TEST_REQUIRES_MACOS: pytest pillow pyopengl
+          CIBW_TEST_REQUIRES_MACOS: pytest pillow pyopengl glfw
           CIBW_TEST_COMMAND: python -m pytest {project}/tests
           CIBW_TEST_COMMAND_LINUX: >
             xvfb-run -s "-screen 0 640x480x24" python -m pytest {project}/tests
