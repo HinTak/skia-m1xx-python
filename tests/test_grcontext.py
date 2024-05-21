@@ -598,7 +598,7 @@ def test_GrVkBackendContext_init():
 
 def test_ShaderError():
     import glfw
-    from OpenGL import GL
+    from OpenGL import GL # github CI 3.7 fails dlopen() here.
 
     path = skia.Path()
     path.moveTo(184, 445)
