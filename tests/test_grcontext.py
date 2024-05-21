@@ -615,10 +615,13 @@ def test_ShaderError():
         raise RuntimeError('glfw.init() failed')
     glfw.window_hint(glfw.STENCIL_BITS, 8)
     window = glfw.create_window(640, 480, '', None, None)
+    assert window is not None
     glfw.make_context_current(window)
 
     context = skia.GrDirectContext.MakeGL()
-    (fb_width, fb_height) = glfw.get_framebuffer_size(window)
+    #(fb_width, fb_height) = glfw.get_framebuffer_size(window)
+    fb_width = 640
+    fb_height = 480
     backend_render_target = skia.GrBackendRenderTarget(
         fb_width,
         fb_height,
