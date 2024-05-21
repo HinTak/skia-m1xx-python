@@ -630,7 +630,7 @@ def test_ShaderError():
     surface = skia.Surface.MakeFromBackendRenderTarget(
         context, backend_render_target, skia.kBottomLeft_GrSurfaceOrigin,
         skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB())
-    assert surface is not None
+    assert surface is not None                                # assert here, with stderr "nullptr GL version string."
 
     GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
