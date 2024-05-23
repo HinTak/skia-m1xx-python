@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14]
+        os: [macos-10]
         arch: [auto64]
         cp: ["cp3{11,12}"]
 
