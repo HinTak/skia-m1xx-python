@@ -16,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         # macos-14/auto64 is arm64
+        # macos-11/auto64 is x86_64
         os: [macos-11]
         arch: [auto64, arm64]
         cp: ["cp3{11,12}"]
