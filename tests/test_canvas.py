@@ -12,6 +12,7 @@ def check_canvas(x):
     assert isinstance(x, skia.Canvas)
 
 
+# Why is this mentioned in the log with [gpu]? The nullptr string?
 def test_Canvas_repr(canvas):
     assert isinstance(repr(canvas), str)
 
