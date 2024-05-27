@@ -15,6 +15,10 @@ def glfw_context():
         raise RuntimeError('glfw.init() failed')
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     glfw.window_hint(glfw.STENCIL_BITS, 8)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
     context = glfw.create_window(640, 480, '', None, None)
     glfw.make_context_current(context)
     logger.debug('glfw context created')
@@ -25,8 +29,10 @@ def glfw_context():
 
 @pytest.fixture(scope='session')
 def glut_context():
-    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow
+    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE
     glutInit()
+    glutInitContextVersion(4, 1)
+    glutInitContextProfile(GLUT_CORE_PROFILE)
     context = glutCreateWindow('Hidden window for OpenGL context')
     glutHideWindow()
     logger.debug('glut context created')
