@@ -35,8 +35,9 @@ def glfw_context():
 def glut_context():
     from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE
     glutInit()
-    glutInitContextVersion(4, 1)
-    glutInitContextProfile(GLUT_CORE_PROFILE)
+    if not sys.platform.startswith("darwin"):
+        glutInitContextVersion(4, 1)
+        glutInitContextProfile(GLUT_CORE_PROFILE)
     context = glutCreateWindow('Hidden window for OpenGL context')
     glutHideWindow()
     logger.debug('glut context created')
