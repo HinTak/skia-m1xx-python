@@ -49,14 +49,17 @@ def opengl_context(request):
         yield request.getfixturevalue('glfw_context')
         return
     except ImportError:
+        warnings.warn(UserWarning('glfw not found'))
         logger.warning('glfw not found')
     except UserWarning as e:
         logger.exception(e)
+        warnings.warn(e)
         pytest.skip('GLFW error')
 
     try:
         yield request.getfixturevalue('glut_context')
     except ImportError:
+        warnings.warn(UserWarning('pyopengl not found'))
         logger.warning('pyopengl not found')
 
     pytest.skip('OpenGL is not available')
@@ -65,12 +68,14 @@ def opengl_context(request):
 @pytest.fixture(scope='session')
 def context(opengl_context):
     context = skia.GrDirectContext.MakeGL()
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
     if not isinstance(context, skia.GrContext):
+        warnings.warn(UserWarning('Failed to create GrDirectContext'))
         pytest.skip('Failed to create GrDirectContext')
+    else:
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
     yield context
 
 
