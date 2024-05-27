@@ -694,10 +694,10 @@ def test_ShaderError_2():
 
     context = skia.GrDirectContext.MakeGL()
 
-    assert glGetString(GL_VENDOR) == b'AMD'
-    assert glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)'
-    assert glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7'
-    assert glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50'
+    assert (glGetString(GL_VENDOR) == b'AMD' and
+            glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)' and
+            glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7' and
+            glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50')
 
     backend_render_target = skia.GrBackendRenderTarget(
         600,
