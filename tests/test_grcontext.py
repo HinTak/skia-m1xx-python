@@ -646,6 +646,15 @@ def test_ShaderError_2():
 
     context = skia.GrDirectContext.MakeGL()
 
+    import warnings
+    print(glGetString(GL_VENDOR).decode())
+    print(glGetString(GL_RENDERER).decode())
+    print(glGetString(GL_VERSION).decode())
+    print(glGetString(GL_SHADING_LANGUAGE_VERSION).decode())
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
     assert (glGetString(GL_VENDOR) == b'AMD' and
             glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)' and
             glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7' and
