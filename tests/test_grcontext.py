@@ -623,6 +623,9 @@ def test_ShaderError_2():
     from OpenGL.GLUT import glutInit, glutInitDisplayMode, GLUT_DOUBLE, GLUT_RGBA, glutInitWindowSize, glutCreateWindow, \
         glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent
     from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8
+    if sys.platform.startswith("darwin"):
+        # glutMainLoopEvent is a Linux/freeglut extension, and glutCheckLoop is an Apple one.
+        from OpenGL.GL import glutCheckLoop as glutMainLoopEvent
 
     path = skia.Path()
     path.moveTo(184, 445)
