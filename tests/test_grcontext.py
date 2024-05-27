@@ -622,7 +622,8 @@ def test_ShaderError():
 def test_ShaderError_2():
     from OpenGL.GLUT import glutInit, glutInitDisplayMode, GLUT_DOUBLE, GLUT_RGBA, glutInitWindowSize, glutCreateWindow, \
         glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent
-    from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8
+    from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8, \
+         glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
     if sys.platform.startswith("darwin"):
         # glutMainLoopEvent is a Linux/freeglut extension, and glutCheckLoop is an Apple one.
         from OpenGL.GL import glutCheckLoop as glutMainLoopEvent
@@ -644,6 +645,11 @@ def test_ShaderError_2():
     glutCreateWindow(b"OpenGL Window")
 
     context = skia.GrDirectContext.MakeGL()
+
+    assert glGetString(GL_VENDOR) == b'AMD'
+    assert glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)'
+    assert glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7'
+    assert glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50'
 
     backend_render_target = skia.GrBackendRenderTarget(
         600,
