@@ -25,8 +25,10 @@ def glfw_context():
 
 @pytest.fixture(scope='session')
 def glut_context():
-    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow
+    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE
     glutInit()
+    glutInitContextVersion(4, 1)
+    glutInitContextProfile(GLUT_CORE_PROFILE)
     context = glutCreateWindow('Hidden window for OpenGL context')
     glutHideWindow()
     logger.debug('glut context created')
