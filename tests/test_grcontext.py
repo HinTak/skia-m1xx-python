@@ -622,7 +622,7 @@ def test_ShaderError():
 
 def test_ShaderError_2():
     from OpenGL.GLUT import glutInit, glutInitDisplayMode, GLUT_DOUBLE, GLUT_RGBA, glutInitWindowSize, glutCreateWindow, \
-        glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE
+        glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE, glutHideWindow
     from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8, \
          glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
     import sys
