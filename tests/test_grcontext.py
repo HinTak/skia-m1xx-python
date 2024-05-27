@@ -694,4 +694,7 @@ def test_ShaderError_2():
     glutPostRedisplay()
     glutDisplayFunc(display)
     #glutMainLoop()
-    glutMainLoopEvent() # paint once then exit
+    ## Apple's glutCheckLoop seems to just quit and die...
+    import time
+    time.sleep(3)
+    #glutMainLoopEvent() # paint once then exit
