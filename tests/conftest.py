@@ -8,6 +8,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+from OpenGL.GL import glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
+import warnings
+
+
 @pytest.fixture(scope='session')
 def glfw_context():
     import glfw
@@ -61,6 +65,10 @@ def opengl_context(request):
 @pytest.fixture(scope='session')
 def context(opengl_context):
     context = skia.GrDirectContext.MakeGL()
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
     if not isinstance(context, skia.GrContext):
         pytest.skip('Failed to create GrDirectContext')
     yield context
