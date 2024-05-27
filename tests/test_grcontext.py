@@ -642,8 +642,9 @@ def test_ShaderError_2():
     path.close()
 
     glutInit()
-    glutInitContextVersion(4, 1)
-    glutInitContextProfile(GLUT_CORE_PROFILE)
+    if not sys.platform.startswith("darwin"):
+        glutInitContextVersion(4, 1)
+        glutInitContextProfile(GLUT_CORE_PROFILE)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowSize(600, 480)
     glutCreateWindow(b"OpenGL Window")
