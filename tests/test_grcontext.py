@@ -624,6 +624,7 @@ def test_ShaderError_2():
         glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent
     from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8, \
          glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
+    import sys
     if sys.platform.startswith("darwin"):
         # glutMainLoopEvent is a Linux/freeglut extension, and glutCheckLoop is an Apple one.
         from OpenGL.GLUT import glutCheckLoop as glutMainLoopEvent
