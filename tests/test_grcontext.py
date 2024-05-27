@@ -578,6 +578,7 @@ def test_ShaderError():
 
     if not glfw.init():
         raise RuntimeError('glfw.init() failed')
+    glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     glfw.window_hint(glfw.STENCIL_BITS, 8)
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
@@ -646,6 +647,7 @@ def test_ShaderError_2():
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowSize(600, 480)
     glutCreateWindow(b"OpenGL Window")
+    glutHideWindow()
 
     context = skia.GrDirectContext.MakeGL()
 
@@ -658,10 +660,10 @@ def test_ShaderError_2():
     warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
     warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
     warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
-    assert (glGetString(GL_VENDOR) == b'AMD' and
-            glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)' and
-            glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7' and
-            glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50')
+#    assert (glGetString(GL_VENDOR) == b'AMD' and
+#            glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)' and
+#            glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7' and
+#            glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50')
 
     backend_render_target = skia.GrBackendRenderTarget(
         600,
