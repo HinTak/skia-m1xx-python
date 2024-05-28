@@ -19,6 +19,7 @@ def glfw_context():
         raise RuntimeError('glfw.init() failed')
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     glfw.window_hint(glfw.STENCIL_BITS, 8)
+    # see https://www.glfw.org/faq#macos
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
