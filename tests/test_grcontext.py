@@ -561,6 +561,7 @@ def test_GrVkImageInfo_init():
 def test_GrVkBackendContext_init():
     assert isinstance(skia.GrVkBackendContext(), skia.GrVkBackendContext)
 
+@pytest.mark.xfail(reason='This is expected to fail with the import')
 def test_ShaderError():
     import glfw
     from OpenGL import GL # github CI 3.7 fails dlopen() here.
