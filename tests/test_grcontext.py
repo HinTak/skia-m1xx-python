@@ -629,6 +629,13 @@ def test_ShaderError_2():
     import sys
     if sys.platform.startswith("darwin"):
         # glutMainLoopEvent is a Linux/freeglut extension, and glutCheckLoop is an Apple one.
+        ## Apparently glutCheckLoop will block (According to https://groups.google.com/g/glumpy-users/c/SiolfYO1zCA)
+        ## and typically used with:
+        ##     stop = False
+        ##     ...
+        ##     global stop
+        ##     while not stop:
+        ##         glut.glutCheckLoop()
         from OpenGL.GLUT import glutCheckLoop as glutMainLoopEvent
 
     path = skia.Path()
