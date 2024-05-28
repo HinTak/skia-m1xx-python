@@ -15,9 +15,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, macos-13, macos-14]
+        os: [macos-12, macos-13]
         arch: [auto64, arm64]
         cp: ["cp3{11,12}"]
+        include:
+          - os: macos-14
+            arch: x86_64
+            cp: "cp3{11,12}"
+          - os: macos-14
+            arch: arm64
+            cp: "cp3{11,12}"
 
     steps:
       - uses: actions/checkout@v4

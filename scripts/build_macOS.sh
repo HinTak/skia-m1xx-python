@@ -11,9 +11,9 @@ TARGET_ARCH=${TARGET_ARCH:-$(uname -m)}
 if [[ ${TARGET_ARCH} == "arm64" ]]; then
     EXTRA_ARGS='
 target_cpu="arm64"
-extra_asmflags=["--target=arm64-apple-macos11",]
-extra_cflags=["--target=arm64-apple-macos11",]
-extra_ldflags=["--target=arm64-apple-macos11",]
+extra_asmflags=["--target=arm64-apple-macos12",]
+extra_cflags=["--target=arm64-apple-macos12",]
+extra_ldflags=["--target=arm64-apple-macos12",]
 '
 fi
 
