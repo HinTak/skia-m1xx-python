@@ -20,9 +20,6 @@ jobs:
         cp: ["cp3{11,12}"]
         include:
           - os: macos-14
-            arch: x86_64
-            cp: "cp3{11,12}"
-          - os: macos-14
             arch: arm64
             cp: "cp3{11,12}"
 
@@ -51,7 +48,6 @@ jobs:
           CIBW_BUILD: "${{ matrix.cp }}-*"
           CIBW_SKIP: "*musllinux*"
           CIBW_ARCHS: ${{ matrix.arch }}
-          CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT_MACOS: TARGET_ARCH=${{ matrix.arch }}
           CIBW_ENVIRONMENT_LINUX: CI_SKIP_BUILD=true
           CIBW_BEFORE_ALL: bash scripts/build_${{ runner.os }}.sh
