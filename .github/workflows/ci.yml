@@ -51,6 +51,7 @@ jobs:
           CIBW_BUILD: "${{ matrix.cp }}-*"
           CIBW_SKIP: "*musllinux*"
           CIBW_ARCHS: ${{ matrix.arch }}
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT_MACOS: TARGET_ARCH=${{ matrix.arch }}
           CIBW_ENVIRONMENT_LINUX: CI_SKIP_BUILD=true
           CIBW_BEFORE_ALL: bash scripts/build_${{ runner.os }}.sh
