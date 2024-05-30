@@ -564,6 +564,7 @@ def test_GrVkBackendContext_init():
 def test_ShaderError():
     import glfw
     from OpenGL import GL # github CI 3.7 fails dlopen() here.
+    from OpenGL.GL import glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
 
     path = skia.Path()
     path.moveTo(184, 445)
@@ -588,6 +589,17 @@ def test_ShaderError():
     window = glfw.create_window(640, 480, '', None, None)
     assert window is not None
     glfw.make_context_current(window)
+
+    import warnings
+    warnings.warn(UserWarning(glfw._glfw))
+    print(glGetString(GL_VENDOR).decode())
+    print(glGetString(GL_RENDERER).decode())
+    print(glGetString(GL_VERSION).decode())
+    print(glGetString(GL_SHADING_LANGUAGE_VERSION).decode())
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
 
     context = skia.GrDirectContext.MakeGL()
     assert context is not None                                # assert here
