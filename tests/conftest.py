@@ -15,6 +15,7 @@ import warnings
 @pytest.fixture(scope='session')
 def glfw_context():
     import glfw
+    warnings.warn(UserWarning(glfw._glfw))
     if not glfw.init():
         raise RuntimeError('glfw.init() failed')
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)

@@ -592,17 +592,17 @@ def test_ShaderError():
 
     import warnings
     warnings.warn(UserWarning(glfw._glfw))
-    print(glGetString(GL_VENDOR).decode())
-    print(glGetString(GL_RENDERER).decode())
-    print(glGetString(GL_VERSION).decode())
-    print(glGetString(GL_SHADING_LANGUAGE_VERSION).decode())
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
-    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
-
     context = skia.GrDirectContext.MakeGL()
     assert context is not None                                # assert here
+    if not isinstance(context, skia.GrContext):
+        warnings.warn(UserWarning('Failed to create GrDirectContext'))
+        pytest.skip('Failed to create GrDirectContext')
+    else:
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
+
     (fb_width, fb_height) = glfw.get_framebuffer_size(window) # segfault against 3.9, 3.11
     backend_render_target = skia.GrBackendRenderTarget(
         fb_width,
