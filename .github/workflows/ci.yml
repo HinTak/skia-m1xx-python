@@ -4,68 +4,24 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, m87]
   release:
     types: [published]
 
 jobs:
-  prebuild_linux_aarch64:
-    name: Build skia on linux/aarch64
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/cache@v4
-        id: cache-skia
-        with:
-          path: |
-            gn
-            skia
-          key: linux-aarch64-skia-${{ github.sha }}
-      - name: Pre-fetch skia deps
-        run: git config --global core.compression 0 && cd skia && python tools/git-sync-deps
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Build skia
-        # Taken from https://github.com/pypa/cibuildwheel/blob/v2.16.2/cibuildwheel/resources/pinned_docker_images.cfg
-        uses: docker://quay.io/pypa/manylinux2014_aarch64:2023-10-03-72cdc42
-        if: ${{ steps.cache-skia.outputs.cache-hit != 'true' }}
-        with:
-          args: bash -c "git config --global --add safe.directory '*' &&
-                         bash scripts/build_Linux.sh &&
-                         chmod a+rwx -R skia"
-
   build_wheels:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }}) for ${{ matrix.cp }}
-    needs: prebuild_linux_aarch64
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
-        arch: [auto64]
-        cp: ["cp3{8,9,10,11,12}"]
+        os: [macos-12, macos-13]
+        arch: [auto64, arm64]
+        cp: ["cp3{11,12}"]
         include:
-          - os: macos-12
+          - os: macos-14
             arch: arm64
-            cp: "cp3{8,9,10,11,12}"
-          # aarch64 is emulated and takes longer, build one wheel per job
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp38
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp39
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp310
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp311
-          - os: ubuntu-22.04
-            arch: aarch64
-            cp: cp312
+            cp: "cp3{11,12}"
 
     steps:
       - uses: actions/checkout@v4
@@ -97,11 +53,18 @@ jobs:
           CIBW_BEFORE_ALL: bash scripts/build_${{ runner.os }}.sh
           CIBW_BEFORE_BUILD: pip install pybind11 numpy
           CIBW_TEST_REQUIRES: pytest pillow glfw
-          CIBW_TEST_REQUIRES_MACOS: pytest pillow pyopengl
+          CIBW_TEST_REQUIRES_MACOS: pytest pillow pyopengl glfw
           CIBW_TEST_COMMAND: python -m pytest {project}/tests
           CIBW_TEST_COMMAND_LINUX: >
             xvfb-run -s "-screen 0 640x480x24" python -m pytest {project}/tests
-          CIBW_TEST_SKIP: "*-macosx_arm64"
+        ## wheel testing on macos-11/arm64 in github CI is disabled with a warning:
+        ## "while arm64 wheels can be built on x86_64, they cannot be tested. ..."
+        ## with a suggestion of adding the following line:
+        #  CIBW_TEST_SKIP: "*-macosx_arm64"
+        ## This is no longer the case for 'macos-14' (arm64 by default). 'macos-13'
+        ## is still x86_64.
+        ## https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+        ## 'macos-11' will no longer be available after 6/28/2024
 
       - uses: actions/upload-artifact@v4
         with:

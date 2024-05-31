@@ -8,13 +8,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+from OpenGL.GL import glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
+import warnings
+
+
 @pytest.fixture(scope='session')
 def glfw_context():
     import glfw
+    warnings.warn(UserWarning(glfw._glfw))
     if not glfw.init():
         raise RuntimeError('glfw.init() failed')
     glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     glfw.window_hint(glfw.STENCIL_BITS, 8)
+    # see https://www.glfw.org/faq#macos
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
     context = glfw.create_window(640, 480, '', None, None)
     glfw.make_context_current(context)
     logger.debug('glfw context created')
@@ -25,8 +35,11 @@ def glfw_context():
 
 @pytest.fixture(scope='session')
 def glut_context():
-    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow
+    from OpenGL.GLUT import glutInit, glutCreateWindow, glutHideWindow, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE
     glutInit()
+    if not sys.platform.startswith("darwin"):
+        glutInitContextVersion(4, 1)
+        glutInitContextProfile(GLUT_CORE_PROFILE)
     context = glutCreateWindow('Hidden window for OpenGL context')
     glutHideWindow()
     logger.debug('glut context created')
@@ -39,14 +52,17 @@ def opengl_context(request):
         yield request.getfixturevalue('glfw_context')
         return
     except ImportError:
+        warnings.warn(UserWarning('glfw not found'))
         logger.warning('glfw not found')
     except UserWarning as e:
         logger.exception(e)
+        warnings.warn(e)
         pytest.skip('GLFW error')
 
     try:
         yield request.getfixturevalue('glut_context')
     except ImportError:
+        warnings.warn(UserWarning('pyopengl not found'))
         logger.warning('pyopengl not found')
 
     pytest.skip('OpenGL is not available')
@@ -56,7 +72,13 @@ def opengl_context(request):
 def context(opengl_context):
     context = skia.GrDirectContext.MakeGL()
     if not isinstance(context, skia.GrContext):
+        warnings.warn(UserWarning('Failed to create GrDirectContext'))
         pytest.skip('Failed to create GrDirectContext')
+    else:
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
     yield context
 
 

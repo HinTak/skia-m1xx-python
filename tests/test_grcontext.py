@@ -560,3 +560,174 @@ def test_GrVkImageInfo_init():
 
 def test_GrVkBackendContext_init():
     assert isinstance(skia.GrVkBackendContext(), skia.GrVkBackendContext)
+
+def test_ShaderError():
+    import glfw
+    from OpenGL import GL # github CI 3.7 fails dlopen() here.
+    from OpenGL.GL import glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
+
+    path = skia.Path()
+    path.moveTo(184, 445)
+    path.lineTo(249, 445)
+    path.quadTo(278, 445, 298, 438)
+    path.quadTo(318, 431, 331, 419)
+    path.quadTo(344, 406, 350, 390)
+    path.quadTo(356, 373, 356, 354)
+    path.quadTo(356, 331, 347, 312)
+    path.quadTo(338, 292, 320, 280) # <- comment out this line and shape will draw correctly with anti-aliasing
+    path.close()
+
+    if not glfw.init():
+        raise RuntimeError('glfw.init() failed')
+    glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
+    glfw.window_hint(glfw.STENCIL_BITS, 8)
+    # See https://www.glfw.org/faq#macos
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+    window = glfw.create_window(640, 480, '', None, None)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+    assert window is not None
+    glfw.make_context_current(window)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+    import warnings
+    warnings.warn(UserWarning(glfw._glfw))
+    context = skia.GrDirectContext.MakeGL()
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+    assert context is not None                                # assert here
+    if not isinstance(context, skia.GrContext):
+        warnings.warn(UserWarning('Failed to create GrDirectContext'))
+        pytest.skip('Failed to create GrDirectContext')
+    else:
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+        warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
+
+    (fb_width, fb_height) = glfw.get_framebuffer_size(window) # segfault against 3.9, 3.11
+    backend_render_target = skia.GrBackendRenderTarget(
+        fb_width,
+        fb_height,
+        0,  # sampleCnt
+        0,  # stencilBits
+        skia.GrGLFramebufferInfo(0, GL.GL_RGBA8))
+    surface = skia.Surface.MakeFromBackendRenderTarget(
+        context, backend_render_target, skia.kBottomLeft_GrSurfaceOrigin,
+        skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB())
+    assert surface is not None                                # assert here, with stderr "nullptr GL version string."
+    # cp311-macosx_x86_64/venv-test/lib/python3.11/site-packages/glfw/__init__.py:914: GLFWError: (65545) b'NSGL: Failed to find a suitable pixel format'
+    #     warnings.warn(message, GLFWError)
+
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT)
+
+    with surface as canvas:
+        canvas.drawCircle(100, 100, 40, skia.Paint(Color=skia.ColorGREEN, AntiAlias=True))
+
+        paint = skia.Paint(Color=skia.ColorBLUE)
+        paint.setStyle(skia.Paint.kStroke_Style)
+        paint.setStrokeWidth(2)
+        paint.setAntiAlias(True)
+
+        canvas.drawPath(path, paint)
+
+    surface.flushAndSubmit()
+    import glfw
+    glfw.swap_buffers(window)
+
+def test_ShaderError_2():
+    from OpenGL.GLUT import glutInit, glutInitDisplayMode, GLUT_DOUBLE, GLUT_RGBA, glutInitWindowSize, glutCreateWindow, \
+        glutSwapBuffers, glutPostRedisplay, glutDisplayFunc, glutMainLoop, glutMainLoopEvent, glutInitContextVersion, glutInitContextProfile, GLUT_CORE_PROFILE, glutHideWindow
+    from OpenGL.GL import glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_RGBA8, \
+         glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION
+    import sys
+    if sys.platform.startswith("darwin"):
+        # glutMainLoopEvent is a Linux/freeglut extension, and glutCheckLoop is an Apple one.
+        ## Apparently glutCheckLoop will block (According to https://groups.google.com/g/glumpy-users/c/SiolfYO1zCA)
+        ## and typically used with:
+        ##     stop = False
+        ##     ...
+        ##     global stop
+        ##     while not stop:
+        ##         glut.glutCheckLoop()
+        from OpenGL.GLUT import glutCheckLoop as glutMainLoopEvent
+
+    path = skia.Path()
+    path.moveTo(184, 445)
+    path.lineTo(249, 445)
+    path.quadTo(278, 445, 298, 438)
+    path.quadTo(318, 431, 331, 419)
+    path.quadTo(344, 406, 350, 390)
+    path.quadTo(356, 373, 356, 354)
+    path.quadTo(356, 331, 347, 312)
+    path.quadTo(338, 292, 320, 280) # <- comment out this line and shape will draw correctly with anti-aliasing
+    path.close()
+
+    glutInit()
+    if not sys.platform.startswith("darwin"):
+        glutInitContextVersion(4, 1)
+        glutInitContextProfile(GLUT_CORE_PROFILE)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
+    glutInitWindowSize(600, 480)
+    glutCreateWindow(b"OpenGL Window")
+    glutHideWindow()
+
+    context = skia.GrDirectContext.MakeGL()
+
+    import warnings
+    print(glGetString(GL_VENDOR).decode())
+    print(glGetString(GL_RENDERER).decode())
+    print(glGetString(GL_VERSION).decode())
+    print(glGetString(GL_SHADING_LANGUAGE_VERSION).decode())
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VENDOR).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_RENDERER).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_VERSION).decode()))
+    warnings.warn(UserWarning('"%s"' % glGetString(GL_SHADING_LANGUAGE_VERSION).decode()))
+#    assert (glGetString(GL_VENDOR) == b'AMD' and
+#            glGetString(GL_RENDERER) == b'AMD Radeon R5 Graphics (radeonsi, stoney, LLVM 18.1.1, DRM 3.57, 6.8.9-300.fc40.x86_64)' and
+#            glGetString(GL_VERSION) == b'4.5 (Compatibility Profile) Mesa 24.0.7' and
+#            glGetString(GL_SHADING_LANGUAGE_VERSION) == b'4.50')
+
+    backend_render_target = skia.GrBackendRenderTarget(
+        600,
+        480,
+        0,  # sampleCnt
+        0,  # stencilBits
+        skia.GrGLFramebufferInfo(0, GL_RGBA8))
+    surface = skia.Surface.MakeFromBackendRenderTarget(
+        context, backend_render_target, skia.kBottomLeft_GrSurfaceOrigin,
+        skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB())
+    assert surface is not None
+
+    def display():
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        with surface as canvas:
+            canvas.drawCircle(100, 100, 40, skia.Paint(Color=skia.ColorGREEN, AntiAlias=True))
+
+            paint = skia.Paint(Color=skia.ColorBLUE)
+            paint.setStyle(skia.Paint.kStroke_Style)
+            paint.setStrokeWidth(2)
+        paint.setAntiAlias(True)
+
+        canvas.drawPath(path, paint)
+
+    surface.flushAndSubmit()
+    glutSwapBuffers()
+    glutPostRedisplay()
+    glutDisplayFunc(display)
+    #glutMainLoop()
+    ## Apple's glutCheckLoop seems to just quit and die...
+    display()
+    import time
+    time.sleep(3)
+    #glutMainLoopEvent() # paint once then exit
