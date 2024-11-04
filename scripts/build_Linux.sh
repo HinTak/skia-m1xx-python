@@ -17,9 +17,9 @@ if [[ $EUID -eq 0 ]]; then
         fontconfig-devel \
         mesa-libGL-devel \
         xorg-x11-server-Xvfb \
-        google-noto-color-emoji-fonts \
         mesa-dri-drivers && \
         yum clean all && \
+        apt-get install -y fonts-noto-color-emoji && \
         rm -rf /var/cache/yum
 fi
 
