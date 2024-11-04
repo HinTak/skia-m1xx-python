@@ -689,7 +689,6 @@ def test_ttc3():
 
 @pytest.fixture
 def color_emoji_run():
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     import sys
     if sys.platform.startswith("linux"):
         typeface = skia.Typeface("Noto Color Emoji")
