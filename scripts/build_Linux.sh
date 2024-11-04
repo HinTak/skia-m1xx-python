@@ -17,6 +17,7 @@ if [[ $EUID -eq 0 ]]; then
         fontconfig-devel \
         mesa-libGL-devel \
         xorg-x11-server-Xvfb \
+        google-noto-color-emoji-fonts \
         mesa-dri-drivers && \
         yum clean all && \
         rm -rf /var/cache/yum
