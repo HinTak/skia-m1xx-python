@@ -690,10 +690,11 @@ def test_ttc3():
 @pytest.fixture
 def color_emoji_run():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    typeface = skia.Typeface.MakeFromFile(os.path.join(root_dir, "NotoColorEmoji.ttf"))
-    if (typeface == None): # Mac - it uses "Zapf Dingbats" otherwise ; apple does not support CBDT/CBLC
-        typeface = skia.Typeface("Apple Color Emoji")
     import sys
+    if sys.platform.startswith("linux"):
+        typeface = skia.Typeface("Noto Color Emoji")
+    if sys.platform.startswith("darwin"):
+        typeface = skia.Typeface("Apple Color Emoji")
     if sys.platform.startswith("win"):
         typeface = skia.Typeface("Segoe UI Emoji") # COLRv0
     text = "✌✌🏻"
