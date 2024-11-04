@@ -113,6 +113,12 @@ jobs:
         with:
           platforms: ${{ matrix.arch }}
 
+      - name: Install Noto Color Emoji (Needed by one of the tests)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install fonts-noto-color-emoji
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.3
         env:
