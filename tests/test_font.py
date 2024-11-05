@@ -691,7 +691,12 @@ def test_ttc3():
 def color_emoji_run():
     import sys
     if sys.platform.startswith("linux"):
-        typeface = skia.Typeface("Noto Color Emoji")
+        if (os.getenv("GITHUB_ACTION") == True):
+            # Ubuntu is weird - the font is on disk but not accessible to fontconfig
+            # - Possibly https://bugs.launchpad.net/bugs/2054924
+            typeface = skia.Typeface.MakeFromFile("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf")
+        else:
+            pytest.skip("Not in Ubuntu CI")
     if sys.platform.startswith("darwin"):
         typeface = skia.Typeface("Apple Color Emoji")
     if sys.platform.startswith("win"):
