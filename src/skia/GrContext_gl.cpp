@@ -58,6 +58,7 @@ py::class_<GrGLInterface, sk_sp<GrGLInterface>, SkRefCnt>(
         return const_cast<GrGLInterface*>(ptr);
     }))
     .def_static("MakeEGL", &GrGLInterfaces::MakeEGL)
+    .def_static("MakeGLX", &GrGLInterfaces::MakeGLX)
     ;
 
 }
