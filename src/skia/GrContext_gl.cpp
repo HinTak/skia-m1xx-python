@@ -56,6 +56,8 @@ py::class_<GrGLInterface, sk_sp<GrGLInterface>, SkRefCnt>(
             throw std::runtime_error("null pointer exception.");
         const GrGLInterface* ptr = interface.release();
         return const_cast<GrGLInterface*>(ptr);
-    }));
+    }))
+    .def_static("MakeEGL", &GrGLInterfaces::MakeEGL)
+    ;
 
 }
