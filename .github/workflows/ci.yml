@@ -258,7 +258,7 @@ jobs:
     container: fedora:41
     permissions: write-all
     steps:
-       - run: dnf install -y dnf-utils git
+       - run: dnf install -y dnf-utils git gcc-c++ python3-pytest
        - uses: actions/checkout@v4
          with:
           submodules: recursive
