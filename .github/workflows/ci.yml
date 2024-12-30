@@ -252,3 +252,16 @@ jobs:
           path: dist
 
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+  build_and_test_on_Fedora:
+    runs-on: ubuntu-24.04
+    container: fedora:41
+    permissions: write-all
+    steps:
+       - run: dnf install -y dnf-utils git
+       - uses: actions/checkout@v4
+         with:
+          submodules: recursive
+       - run: bash scripts/build_Linux.sh
+       - run: python -m build --format wheel
+       - run: pytest
