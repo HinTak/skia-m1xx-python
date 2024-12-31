@@ -260,6 +260,7 @@ jobs:
     steps:
        - run: dnf install -y dnf-utils git gcc-c++ libstdc++-devel libstdc++-static
        - run: dnf install -y python3-build python3-devel python3-pytest python3-pillow
+       - run: dnf install -y egl-utils glx-utils
        - run: dnf install -y patch
        - run: dnf install -y expat-devel fontconfig-devel
        - run: dnf install -y libxml2-devel vulkan-headers
@@ -272,5 +273,7 @@ jobs:
 #       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface is not None ; print("Success1")'
 #       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface.validate() ; print("Success2")'
 #       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert isinstance(skia.GrDirectContext.MakeGL(interface), skia.GrContext) ; print("Success3")'
+        - run: eglinfo
+        - run: xvfb-run -s "-screen 0 640x480x24" glxinfo
        # The below also run that 3 lines above but under X, but allows it to fail there.
        - run: xvfb-run -s "-screen 0 640x480x24" pytest
