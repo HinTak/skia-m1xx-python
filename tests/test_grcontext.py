@@ -540,10 +540,8 @@ def test_GrContext_ComputeImageSize(image):
         int)
 
 
-def test_GrDirectContext_MakeGL(context):
-    assert isinstance(context, skia.GrContext)
-
-
+# We want this to be followed by something that re-obtain the context
+# as this one can fail, but making a broken context current.
 def test_GrDirectContext_MakeGL_EGL():
     if not sys.platform.startswith("linux"):
         pytest.skip("API on Linux only")
@@ -557,9 +555,14 @@ def test_GrDirectContext_MakeGL_EGL():
     assert isinstance(skia.GrDirectContext.MakeGL(interface), skia.GrContext)
 
 
+def test_GrDirectContext_MakeGL(context):
+    assert isinstance(context, skia.GrContext)
+
+
+# inherits the context from the last call
 def test_GrDirectContext_MakeGL_GLX():
-    import moderngl
-    moderngl_context = moderngl.create_standalone_context()
+    #import moderngl
+    #moderngl_context = moderngl.create_standalone_context()
     if not sys.platform.startswith("linux"):
         pytest.skip("API on Linux only")
     assert isinstance(skia.GrDirectContext.MakeGL(skia.GrGLInterface.MakeGLX()), skia.GrContext)
