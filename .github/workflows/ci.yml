@@ -259,7 +259,7 @@ jobs:
     permissions: write-all
     steps:
        - run: dnf install -y dnf-utils git gcc-c++ libstdc++-devel libstdc++-static
-       - run: dnf install -y python3-build python3-pytest
+       - run: dnf install -y python3-build python3-devel python3-pytest
        - run: dnf install -y patch
        - run: dnf install -y expat-devel fontconfig-devel
        - run: dnf install -y libxml2-devel vulkan-headers
