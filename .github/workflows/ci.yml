@@ -269,4 +269,4 @@ jobs:
        - run: bash scripts/build_Linux.sh
        - run: python -m build --wheel
        - run: python -m pip install dist/*.whl
-       - run: pytest
+       - run: xvfb-run -s "-screen 0 640x480x24" pytest
