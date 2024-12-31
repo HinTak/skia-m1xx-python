@@ -267,5 +267,5 @@ jobs:
          with:
           submodules: recursive
        - run: bash scripts/build_Linux.sh
-       - run: python -m build --format wheel
+       - run: python -m build --wheel
        - run: pytest
