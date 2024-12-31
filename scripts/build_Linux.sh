@@ -54,6 +54,7 @@ fi
 git clone https://gn.googlesource.com/gn && \
     cd gn && \
     git checkout c97a86a72105f3328a540f5a5ab17d11989ab7dd && \
+    patch -p1 < ../patch/0001-g-Werror-maybe-uninitialized-failure.patch && \
     python3 build/gen.py && \
     ninja -C out gn && \
     cd ..

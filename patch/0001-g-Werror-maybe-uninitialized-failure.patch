@@ -1,0 +1,26 @@
+From b332f9ec9726131dc1cee8214b963774aa9fc674 Mon Sep 17 00:00:00 2001
+From: Hin-Tak Leung <htl10@users.sourceforge.net>
+Date: Tue, 31 Dec 2024 07:27:04 +0000
+Subject: [PATCH] g++ -Werror=maybe-uninitialized failure
+
+Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
+---
+ src/gn/operators.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/gn/operators.cc b/src/gn/operators.cc
+index 7c04dd3a..7649174c 100644
+--- a/src/gn/operators.cc
++++ b/src/gn/operators.cc
+@@ -195,7 +195,7 @@ void ValueDestination::MakeUndefinedIdentifierForModifyError(Err* err) {
+ // Computes an error message for overwriting a nonempty list/scope with another.
+ Err MakeOverwriteError(const BinaryOpNode* op_node, const Value& old_value) {
+   std::string type_name;
+-  std::string empty_def;
++  std::string empty_def("");
+ 
+   if (old_value.type() == Value::LIST) {
+     type_name = "list";
+-- 
+2.47.1
+
