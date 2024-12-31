@@ -17,7 +17,7 @@ index 7c04dd3a..7649174c 100644
  Err MakeOverwriteError(const BinaryOpNode* op_node, const Value& old_value) {
    std::string type_name;
 -  std::string empty_def;
-+  std::string empty_def("");
++  std::string empty_def = "";
  
    if (old_value.type() == Value::LIST) {
      type_name = "list";
