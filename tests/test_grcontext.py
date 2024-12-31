@@ -565,6 +565,8 @@ def test_GrDirectContext_MakeGL_GLX():
     #moderngl_context = moderngl.create_standalone_context()
     if not sys.platform.startswith("linux"):
         pytest.skip("API on Linux only")
+    #import moderngl
+    #moderngl_context = moderngl.create_standalone_context()
     assert isinstance(skia.GrDirectContext.MakeGL(skia.GrGLInterface.MakeGLX()), skia.GrContext)
 
 
