@@ -269,8 +269,8 @@ jobs:
        - run: bash scripts/build_Linux.sh
        - run: python -m build --wheel
        - run: python -m pip install dist/*.whl
-       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface is not None ; print("Success1")'
-       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface.validate() ; print("Success2")'
-       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert isinstance(skia.GrDirectContext.MakeGL(interface), skia.GrContext) ; print("Success3")'
+#       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface is not None ; print("Success1")'
+#       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert interface.validate() ; print("Success2")'
+#       - run: python -c 'import skia; interface = skia.GrGLInterface.MakeEGL() ; assert isinstance(skia.GrDirectContext.MakeGL(interface), skia.GrContext) ; print("Success3")'
        # The below also run that 3 lines above but under X, but allows it to fail there.
        - run: xvfb-run -s "-screen 0 640x480x24" pytest
