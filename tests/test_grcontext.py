@@ -547,14 +547,19 @@ def test_GrDirectContext_MakeGL(context):
 def test_GrDirectContext_MakeGL_EGL():
     if not sys.platform.startswith("linux"):
         pytest.skip("API on Linux only")
+    import moderngl
+    moderngl_context = moderngl.create_standalone_context(backend="egl")
     import os
     interface = skia.GrGLInterface.MakeEGL()
+    # The interface non-Null and validate tests don't fail under X!
     if ((interface is None) or (not interface.validate())) and (os.getenv("DISPLAY") == True):
         pytest.skip("Software-only X (Xvfb)")
     assert isinstance(skia.GrDirectContext.MakeGL(interface), skia.GrContext)
 
 
 def test_GrDirectContext_MakeGL_GLX():
+    import moderngl
+    moderngl_context = moderngl.create_standalone_context()
     if not sys.platform.startswith("linux"):
         pytest.skip("API on Linux only")
     assert isinstance(skia.GrDirectContext.MakeGL(skia.GrGLInterface.MakeGLX()), skia.GrContext)
