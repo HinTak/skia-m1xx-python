@@ -268,4 +268,5 @@ jobs:
           submodules: recursive
        - run: bash scripts/build_Linux.sh
        - run: python -m build --wheel
+       - run: python -m pip install dist/*.whl
        - run: pytest
