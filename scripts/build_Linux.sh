@@ -16,6 +16,7 @@ if [[ $EUID -eq 0 ]]; then
         python3 \
         fontconfig-devel \
         mesa-libGL-devel \
+        mesa-libEGL-devel libglvnd-devel mesa-libGLES-devel libglvnd mesa-libGLES mesa-libEGL libglvnd-egl \
         xorg-x11-server-Xvfb \
         mesa-dri-drivers && \
         yum clean all && \
@@ -33,7 +34,6 @@ if [[ $(uname -m) == "aarch64" ]]; then
     yum -y install epel-release && \
         yum repolist && \
         yum install -y ninja-build && \
-        ln -s ninja-build /usr/bin/ninja &&
         mv depot_tools/ninja depot_tools/ninja.bak
 fi
 
@@ -53,8 +53,9 @@ fi
 # Build gn
 git clone https://gn.googlesource.com/gn && \
     cd gn && \
-    git checkout fe330c0ae1ec29db30b6f830e50771a335e071fb && \
-    python build/gen.py && \
+    git checkout c97a86a72105f3328a540f5a5ab17d11989ab7dd && \
+    patch -p1 < ../patch/0001-g-Werror-maybe-uninitialized-failure.patch && \
+    python3 build/gen.py && \
     ninja -C out gn && \
     cd ..
 
@@ -62,6 +63,7 @@ git clone https://gn.googlesource.com/gn && \
 cd skia && \
     patch -p1 < ../patch/skia-m132-minimize-download.patch && \
     patch -p1 < ../patch/skia-m132-colrv1-freetype.diff && \
+    patch -p1 < ../patch/skia-m132-egl-runtime.diff && \
     python3 tools/git-sync-deps && \
     cp -f ../gn/out/gn bin/gn && \
     bin/gn gen out/Release --args="
