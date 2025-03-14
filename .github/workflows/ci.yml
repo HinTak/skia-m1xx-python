@@ -54,6 +54,7 @@ jobs:
   # identical to "build_wheels", except with the older pypa/cibuildwheel@v2.19.2
   build_wheels_old:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }}) for ${{ matrix.cp }}
+    needs: prebuild_linux_aarch64
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
