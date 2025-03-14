@@ -59,7 +59,7 @@ skia_use_system_icu=false
 skia_use_system_harfbuzz=false
 extra_cflags_cc=[\"-frtti\"]
 extra_ldflags=[\"-lrt\"]
-cc=\"/usr/bin/clang -std=c++14\"
+cc=\"/usr/bin/clang -std=c11\"
 cxx=\"/usr/bin/clang++ -std=c++14\"
 " && \
     ninja -C out/Release skia skia.h experimental_svg_model && \
