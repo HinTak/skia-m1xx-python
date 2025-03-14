@@ -57,10 +57,10 @@ skia_use_system_libwebp=false
 skia_use_system_libpng=false
 skia_use_system_icu=false
 skia_use_system_harfbuzz=false
-extra_cflags_cc=[\"-std=c++14\", \"-frtti\"]
+extra_cflags_cc=[\"-std=c++17\", \"-frtti\"]
 extra_ldflags=[\"-lrt\"]
-cc=\"gcc -std=c11\"
-cxx=\"g++ -std=c++14\"
+cc=\"clang -std=c17\"
+cxx=\"clang++ -std=c++17\"
 " && \
     ninja -C out/Release skia skia.h experimental_svg_model && \
     cd ..
