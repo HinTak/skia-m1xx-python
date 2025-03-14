@@ -14,6 +14,7 @@ fi
 
 # Install system dependencies
 yum install -y \
+    clang \
     python3 \
     fontconfig-devel \
     mesa-libGL-devel \
@@ -41,6 +42,8 @@ git clone https://gn.googlesource.com/gn && \
     cd ..
 
 # Build skia
+export CC=clang
+export CXX=clang++
 cd skia && \
     python3 tools/git-sync-deps && \
     patch -p1 < ../patch/make_data_assembly.patch && \
