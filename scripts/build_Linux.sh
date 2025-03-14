@@ -48,7 +48,6 @@ git clone https://gn.googlesource.com/gn && \
 cd skia && \
     python3 tools/git-sync-deps && \
     patch -p1 < ../patch/make_data_assembly.patch && \
-    patch -p1 < ../patch/libjpeg-arm.patch && \
     cp -f ../gn/out/gn bin/gn && \
     bin/gn gen out/Release --args="
 is_official_build=true
