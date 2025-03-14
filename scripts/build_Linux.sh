@@ -14,6 +14,7 @@ fi
 
 # Install system dependencies
 yum install -y \
+    clang \
     python3 \
     fontconfig-devel \
     mesa-libGL-devel \
