@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, m87]
   release:
     types: [published]
 
 jobs:
   prebuild_linux_aarch64:
     name: Build skia on linux/aarch64
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04-arm
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,8 +28,8 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Build skia
-        # Taken from https://github.com/pypa/cibuildwheel/blob/v2.16.2/cibuildwheel/resources/pinned_docker_images.cfg
-        uses: docker://quay.io/pypa/manylinux2014_aarch64:2024.07.02-0
+        # Taken from https://github.com/pypa/cibuildwheel/blob/v2.19.2/cibuildwheel/resources/pinned_docker_images.cfg
+        uses: docker://quay.io/pypa/manylinux_2_28_aarch64:2024.07.02-0
         if: ${{ steps.cache-skia.outputs.cache-hit != 'true' }}
         with:
           args: bash -c "git config --global --add safe.directory '*' &&
@@ -51,16 +51,16 @@ jobs:
             arch: arm64
             cp: "cp3{10,11,12,13}"
           # aarch64 is emulated and takes longer, build one wheel per job
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp310
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp311
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp312
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp313
 
@@ -86,6 +86,8 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.3
         env:
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_BUILD: "${{ matrix.cp }}-*"
           CIBW_SKIP: "*musllinux*"
           CIBW_ARCHS: ${{ matrix.arch }}
@@ -121,10 +123,10 @@ jobs:
             arch: arm64
             cp: "cp3{8,9}"
           # aarch64 is emulated and takes longer, build one wheel per job
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp38
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04-arm
             arch: aarch64
             cp: cp39
 
@@ -150,6 +152,8 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.19.2
         env:
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_BUILD: "${{ matrix.cp }}-*"
           CIBW_SKIP: "*musllinux*"
           CIBW_ARCHS: ${{ matrix.arch }}

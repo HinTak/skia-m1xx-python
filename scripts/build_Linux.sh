@@ -9,7 +9,6 @@ if [[ $(uname -m) == "aarch64" ]]; then
     yum -y install epel-release && \
         yum repolist && \
         yum install -y ninja-build && \
-        ln -s ninja-build /usr/bin/ninja &&
         mv depot_tools/ninja depot_tools/ninja.bak
 fi
 
@@ -21,6 +20,9 @@ yum install -y \
     mesa-dri-drivers && \
     yum clean all && \
     rm -rf /var/cache/yum
+
+# EL8 anomaly: EL7 is python 2 and EL9 is python 3
+[[ -f /usr/bin/python ]] || ln -s /usr/bin/python3 /usr/bin/python
 
 if [[ $(uname -m) == "aarch64" ]] && [[ $CI_SKIP_BUILD == "true" ]]; then
     # gn and skia already built in a previous job
@@ -36,7 +38,7 @@ export LDFLAGS="-lrt"
 git clone https://gn.googlesource.com/gn && \
     cd gn && \
     git checkout 981f46c64d1456d2083b1a2fa1367e753e0cdc1b && \
-    python build/gen.py && \
+    python3 build/gen.py && \
     ninja -C out gn && \
     cd ..
 
@@ -46,6 +48,7 @@ cd skia && \
     python tools/git-sync-deps && \
     patch -p1 < ../patch/make_data_assembly.patch && \
     patch -p1 < ../patch/libjpeg-arm.patch && \
+    patch -p1 < ../patch/skia-m87-c++-code.diff && \
     cp -f ../gn/out/gn bin/gn && \
     bin/gn gen out/Release --args="
 is_official_build=true
