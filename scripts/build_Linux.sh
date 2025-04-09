@@ -27,6 +27,7 @@ cd skia && \
     patch -p1 < ../patch/make_data_assembly.patch && \
     patch -p1 < ../patch/libjpeg-arm.patch && \
     patch -p1 < ../patch/skia-m87-c++-code.diff && \
+    patch -p1 < ../patch/8d921a16f835aa6da69bac16f77ac0305e478954.patch && \
     gn gen out/Release --args="
 is_official_build=true
 skia_enable_tools=true
