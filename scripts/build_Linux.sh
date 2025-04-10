@@ -30,6 +30,7 @@ cd skia && \
     patch -p1 < ../patch/8d921a16f835aa6da69bac16f77ac0305e478954.patch && \
     patch -p1 < ../patch/ed435953dfd6e277549f07bb2fa977130f0e29fc.patch && \
     patch -p1 < ../patch/4f4c064d5b749f139eb69d6e7f3852cb0fd53d4f.patch && \
+    patch -p1 < ../patch/skia-m87-use-system-gn.diff && \
     gn gen out/Release --args="
 is_official_build=true
 skia_enable_tools=true
