@@ -1,0 +1,130 @@
+From 4f4c064d5b749f139eb69d6e7f3852cb0fd53d4f Mon Sep 17 00:00:00 2001
+From: Mike Klein <mtklein@google.com>
+Date: Fri, 15 Jan 2021 07:20:33 -0600
+Subject: [PATCH] roll gn to latest
+
+Nice periodically, and this version also has a Mac arm64 binary.
+
+Refine a few visibility rules from ":*" (any target in this file)
+to "./*" (any target in any .gn file anywhere under this directory).
+
+Use frameworks over libs where now required.
+
+Change-Id: Ic19e1533e2810d18ae4684645d8555b422320b7f
+Reviewed-on: https://skia-review.googlesource.com/c/skia/+/354536
+Reviewed-by: Brian Osman <brianosman@google.com>
+Commit-Queue: Mike Klein <mtklein@google.com>
+---
+ BUILD.gn                                       | 8 ++------
+ bin/fetch-gn                                   | 2 +-
+ experimental/minimal_ios_mtl_skia_app/BUILD.gn | 2 +-
+ third_party/libsdl/BUILD.gn                    | 2 +-
+ third_party/opencl/BUILD.gn                    | 2 +-
+ tools/skottie_ios_app/BUILD.gn                 | 6 +++---
+ 6 files changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/BUILD.gn b/BUILD.gn
+index ed224796226d..7e6ecad94455 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -69,11 +69,7 @@ config("skia_public") {
+ 
+ # Skia internal APIs, used by Skia itself and a few test tools.
+ config("skia_private") {
+-  visibility = [
+-    ":*",
+-    "//modules/*",
+-    "//experimental/*",
+-  ]
++  visibility = [ "./*" ]
+ 
+   defines = [ "SK_GAMMA_APPLY_TO_A8" ]
+   if (skia_use_fixed_gamma_text) {
+@@ -100,7 +96,7 @@ config("skia_private") {
+ 
+ # Any code that's linked into Skia-the-library should use this config via += skia_library_configs.
+ config("skia_library") {
+-  visibility = [ ":*" ]
++  visibility = [ "./*" ]
+   defines = [ "SKIA_IMPLEMENTATION=1" ]
+ }
+ 
+diff --git a/bin/fetch-gn b/bin/fetch-gn
+index d0c791d1c398..6f3c62dec6b3 100755
+--- a/bin/fetch-gn
++++ b/bin/fetch-gn
+@@ -24,7 +24,7 @@ with open(gnzip, 'wb') as f:
+   pkg = 'linux-amd64' if 'linux'  in sys.platform else \
+         'mac-amd64'   if 'darwin' in sys.platform else \
+         'windows-amd64'
+-  rev = '9e993e3da82a9f4bc5c50c190afbcffd61e3d9e0'
++  rev = 'd62642c920e6a0d1756316d225a90fd6faa9e21e'
+   url = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/{}/+/git_revision:{}'.format(pkg,rev)
+   f.write(urlopen(url).read())
+ 
+diff --git a/experimental/minimal_ios_mtl_skia_app/BUILD.gn b/experimental/minimal_ios_mtl_skia_app/BUILD.gn
+index 1c15a2fde0bb..e3d8639c9bb6 100644
+--- a/experimental/minimal_ios_mtl_skia_app/BUILD.gn
++++ b/experimental/minimal_ios_mtl_skia_app/BUILD.gn
+@@ -18,7 +18,7 @@ if (is_ios && skia_use_metal) {
+       "-std=c++14",
+       "-w",
+     ]
+-    libs = [
++    frameworks = [
+       "Metal.framework",
+       "MetalKit.framework",
+       "UIKit.framework",
+diff --git a/third_party/libsdl/BUILD.gn b/third_party/libsdl/BUILD.gn
+index fa24ef27fa6c..731e4ec87cbd 100644
+--- a/third_party/libsdl/BUILD.gn
++++ b/third_party/libsdl/BUILD.gn
+@@ -228,7 +228,7 @@ third_party("libsdl") {
+       "SDL_VIDEO_OPENGL_ES=1",
+       "SDL_VIDEO_OPENGL_ES2=1",
+     ]
+-    libs += [
++    frameworks = [
+       "Foundation.framework",
+       "QuartzCore.framework",
+       "UIKit.framework",
+diff --git a/third_party/opencl/BUILD.gn b/third_party/opencl/BUILD.gn
+index 03b2a90c6fb1..34d1210878c3 100644
+--- a/third_party/opencl/BUILD.gn
++++ b/third_party/opencl/BUILD.gn
+@@ -8,7 +8,7 @@ third_party("opencl") {
+   if (is_linux) {
+     libs = [ "OpenCL" ]
+   } else if (is_mac) {
+-    libs = [ "OpenCL.framework" ]
++    frameworks = [ "OpenCL.framework" ]
+   } else if (is_win) {
+     libs = [ "OpenCL.lib" ]
+   }
+diff --git a/tools/skottie_ios_app/BUILD.gn b/tools/skottie_ios_app/BUILD.gn
+index a669c922bef9..ceb9916b035c 100644
+--- a/tools/skottie_ios_app/BUILD.gn
++++ b/tools/skottie_ios_app/BUILD.gn
+@@ -51,19 +51,19 @@ if (is_ios) {
+       "-std=c++14",
+       "-w",
+     ]
+-    libs = [
++    frameworks = [
+       "CoreFoundation.framework",
+       "Foundation.framework",
+       "QuartzCore.framework",
+       "UIKit.framework",
+     ]
+     if (skia_enable_gpu && skia_use_metal) {
+-      libs += [
++      frameworks += [
+         "Metal.framework",
+         "MetalKit.framework",
+       ]
+     } else if (skia_enable_gpu && skia_use_gl) {
+-      libs += [
++      frameworks += [
+         "GLKit.framework",
+         "OpenGLES.framework",
+       ]
