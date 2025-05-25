@@ -188,7 +188,8 @@ setup(
     long_description_content_type='text/markdown',
     ext_modules=[extension],
     install_requires=[
-        'numpy',
+        'numpy; sys_platform != "win32"',
+        'numpy>=2.3.0rc1; sys_platform == "win32"',
         'pybind11>=2.6'
     ],
     setup_requires=['pybind11>=2.6'],
