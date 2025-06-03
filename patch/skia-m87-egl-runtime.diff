@@ -41,7 +41,7 @@ diff --git a/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp b/src/gpu/gl/egl/GrG
 index 3af6d84..7ba082f 100644
 --- a/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp
 +++ b/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp
-@@ -130,8 +130,13 @@ static GrGLFuncPtr egl_get_gl_proc(void* ctx, const char name[]) {
+@@ -130,8 +130,14 @@ static GrGLFuncPtr egl_get_gl_proc(void* ctx, const char name[]) {
      return eglGetProcAddress(name);
  }
  
@@ -53,6 +53,7 @@ index 3af6d84..7ba082f 100644
 +namespace GrGLInterfaces {
 +sk_sp<const GrGLInterface> MakeEGL() {
 +    return GrGLMakeEGLInterface();
++}
 +}  // namespace GrGLInterfaces
 +
  const GrGLInterface* GrGLCreateNativeInterface() { return GrGLMakeNativeInterface().release(); }
