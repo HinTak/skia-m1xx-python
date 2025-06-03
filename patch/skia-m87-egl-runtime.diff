@@ -37,8 +37,25 @@ index e7a79b9..7bb8db6 100644
      } else if (is_mac) {
        sources += [ "src/gpu/gl/mac/GrGLMakeNativeInterface_mac.cpp" ]
      } else if (is_ios) {
+diff --git a/include/gpu/gl/GrGLInterface.h b/include/gpu/gl/GrGLInterface.h
+index 42a120d..8e574a5 100644
+--- a/include/gpu/gl/GrGLInterface.h
++++ b/include/gpu/gl/GrGLInterface.h
+@@ -31,6 +31,12 @@ struct GrGLInterface;
+  * appropriate one to build.
+  */
+ SK_API sk_sp<const GrGLInterface> GrGLMakeNativeInterface();
++
++namespace GrGLInterfaces {
++SK_API sk_sp<const GrGLInterface> MakeEGL();
++SK_API sk_sp<const GrGLInterface> MakeGLX();
++}
++
+ // Deprecated alternative to GrGLMakeNativeInterface().
+ SK_API const GrGLInterface* GrGLCreateNativeInterface();
+ 
 diff --git a/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp b/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp
-index 3af6d84..7ba082f 100644
+index 3af6d84..a702245 100644
 --- a/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp
 +++ b/src/gpu/gl/egl/GrGLMakeNativeInterface_egl.cpp
 @@ -130,8 +130,14 @@ static GrGLFuncPtr egl_get_gl_proc(void* ctx, const char name[]) {
