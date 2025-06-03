@@ -22,10 +22,6 @@ def glfw_context():
     # Retrieve WGL extensions (if needed)
     # Example: Use ctypes to interact with WGL extensions if required
 
-    from OpenGL.GL import glGenFramebuffers, glBindFramebuffer, GL_FRAMEBUFFER, glGenTextures, glBindTexture, glTexImage2D, \
-GL_TEXTURE_2D, GL_RGBA, GL_UNSIGNED_BYTE, glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER, glFramebufferTexture2D, \
-GL_COLOR_ATTACHMENT0, glCheckFramebufferStatus, GL_FRAMEBUFFER_COMPLETE, GL_LINEAR
-
     # Create an OpenGL framebuffer for offscreen rendering
     framebuffer = glGenFramebuffers(1)
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer)
