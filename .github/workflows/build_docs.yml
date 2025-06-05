@@ -20,7 +20,7 @@ jobs:
 
       - name: Build docs
         run: |
-          apt-get -y install libegl1-mesa libegl1
+          sudo apt-get -y install libegl1-mesa libegl1
           python -m pip install --pre skia-python
           python -m pip install sphinx==6.2.1 sphinx-rtd-theme
           python setup.py build_sphinx
