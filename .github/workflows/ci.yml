@@ -25,9 +25,9 @@ jobs:
           - os: ubuntu-22.04-arm
             arch: aarch64
             cp: "cp3{10,11,12,13}"
-          - os: [windows-11-arm]
-            arch: [ARM64]
-            cp: ["cp3{11,12,13}"]
+          - os: windows-11-arm
+            arch: ARM64
+            cp: "cp3{11,12,13}"
 
     steps:
       - uses: actions/checkout@v4
